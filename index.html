@@ -670,49 +670,85 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
      SLIDE 7 — SYSTEM ARCHITECTURE
      ============================================ -->
 <section class="slide content-slide" id="slide-7">
-  <div class="slide-content">
+  <div class="slide-content" style="padding-left: clamp(1rem, 3vw, 2.5rem); padding-right: clamp(1rem, 3vw, 2.5rem);">
     <p class="section-label reveal">03 系统架构</p>
     <h2 class="reveal">五大功能模块</h2>
-    <div class="module-grid reveal" style="margin-top: clamp(0.4rem, 1vh, 0.8rem);">
-      <!-- Top row: 3 modules -->
-      <div class="module-row">
-        <div class="module-cell">
-          <p class="m-num">01</p>
-          <p class="m-title">登录认证 / 个人主页</p>
-          <p class="m-desc">bcrypt 哈希 + 加密会话 + 中间件</p>
-        </div>
-        <div class="module-cell">
-          <p class="m-num">02</p>
-          <p class="m-title">组织管理</p>
-          <p class="m-desc">创建/加入/退出/解散 </p>
-        </div>
-        <div class="module-cell">
-          <p class="m-num">03</p>
-          <p class="m-title">知识库管理</p>
-          <p class="m-desc">文档解析 + 向量化 + 知识图谱索引 + 三级可见性</p>
+    <div class="two-col reveal" style="margin-top: clamp(0.3rem, 0.8vh, 0.5rem); gap: clamp(0.5rem, 1.5vw, 1rem); max-width: none;">
+      <div class="col" style="justify-content: center;">
+        <div class="module-grid" style="margin-top: 0; max-width: none;">
+          <div class="module-row">
+            <div class="module-cell">
+              <p class="m-num">01</p>
+              <p class="m-title">登录认证 / 个人主页</p>
+              <p class="m-desc">bcrypt 哈希 + 加密会话 + 中间件</p>
+            </div>
+            <div class="module-cell">
+              <p class="m-num">02</p>
+              <p class="m-title">组织管理</p>
+              <p class="m-desc">创建/加入/退出/解散 </p>
+            </div>
+          </div>
+          <div class="module-row bottom">
+            <div class="module-cell">
+              <p class="m-num">03</p>
+              <p class="m-title">知识库管理</p>
+              <p class="m-desc">文档解析 + 向量化 + 知识图谱索引 + 三级可见性</p>
+            </div>
+            <div class="module-cell">
+              <p class="m-num">04</p>
+              <p class="m-title">MCP 工具集成</p>
+              <p class="m-desc">多服务器接入 + 自主调用</p>
+            </div>
+          </div>
+        <div class="module-row bottom">
+          <div class="module-cell">
+            <p class="m-num">05</p>
+            <p class="m-title">对话助手</p>
+            <p class="m-desc">SSE 流式 + 多模态 + 可视化</p>
+          </div>
+          </div>
         </div>
       </div>
-      <!-- Bottom row: 2 modules -->
-      <div class="module-row bottom">
-        <div class="module-cell">
-          <p class="m-num">04</p>
-          <p class="m-title">MCP 工具集成</p>
-          <p class="m-desc">多服务器接入 + 自主调用</p>
-        </div>
-        <div class="module-cell">
-          <p class="m-num">05</p>
-          <p class="m-title">对话助手</p>
-          <p class="m-desc">SSE 流式 + 多模态 + 可视化</p>
-        </div>
+      <div class="col" style="justify-content: center; align-items: center;">
+        <img src="images/architecture.png" alt="系统架构图" style="width: 100%; max-height: min(75vh, 600px); object-fit: contain;">
+        <p style="font-size: var(--small-size); color: var(--text-muted); text-align: center; margin-top: clamp(0.2rem, 0.5vh, 0.4rem);">系统整体架构</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ============================================
-     SLIDE 7 — KG HYBRID RETRIEVAL
+     SLIDE 8 — SYSTEM SCREENSHOTS
      ============================================ -->
 <section class="slide content-slide" id="slide-8">
+  <div class="slide-content" style="padding: clamp(1rem, 3vw, 2.5rem);">
+    <p class="section-label reveal">03 系统界面</p>
+    <h2 class="reveal" style="margin-bottom: clamp(0.4rem, 1vh, 0.8rem);">功能模块截图</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: clamp(0.4rem, 0.8vw, 0.8rem); flex: 1; min-height: 0; max-width: min(130vw, 1400px); margin: 0 auto; width: 100%;">
+      <div style="display: flex; flex-direction: column; border: 1px solid var(--thin-line); border-radius: 4px; overflow: hidden;">
+        <img src="images/login-page.png" alt="登录页" style="width: 95%; height: 90%; object-fit: cover; object-position: top; display: block;">
+        <p style="font-size: var(--small-size); color: var(--accent); text-align: center; padding: clamp(0.15rem, 0.4vh, 0.3rem);">登录认证</p>
+      </div>
+      <div style="display: flex; flex-direction: column; border: 1px solid var(--thin-line); border-radius: 4px; overflow: hidden;">
+        <img src="images/KB-page-Table.png" alt="知识库" style="width: 95%; height: 90%; object-fit: cover; object-position: top; display: block;">
+        <p style="font-size: var(--small-size); color: var(--accent); text-align: center; padding: clamp(0.15rem, 0.4vh, 0.3rem);">知识库管理</p>
+      </div>
+      <div style="display: flex; flex-direction: column; border: 1px solid var(--thin-line); border-radius: 4px; overflow: hidden;">
+        <img src="images/mcp-tool-dashboard.png" alt="MCP工具" style="width: 95%; height: 90%; object-fit: cover; object-position: top; display: block;">
+        <p style="font-size: var(--small-size); color: var(--accent); text-align: center; padding: clamp(0.15rem, 0.4vh, 0.3rem);">MCP 工具集成</p>
+      </div>
+      <div style="display: flex; flex-direction: column; border: 1px solid var(--thin-line); border-radius: 4px; overflow: hidden;">
+        <img src="images/chat-page-empty.png" alt="对话助手" style="width: 95%; height: 90%; object-fit: cover; object-position: top; display: block;">
+        <p style="font-size: var(--small-size); color: var(--accent); text-align: center; padding: clamp(0.15rem, 0.4vh, 0.3rem);">对话助手</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 9 — KG HYBRID RETRIEVAL
+     ============================================ -->
+<section class="slide content-slide" id="slide-9">
   <div class="slide-content">
     <p class="section-label reveal">04 核心创新</p>
     <h2 class="reveal">系统核心创新点</h2>
@@ -781,9 +817,9 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 
 
 <!-- ============================================
-     SLIDE 9 — EVALUATION SETUP
+     SLIDE 10 — EVALUATION SETUP
      ============================================ -->
-<section class="slide content-slide" id="slide-9">
+<section class="slide content-slide" id="slide-10">
   <div class="slide-content">
     <p class="section-label reveal">05 评估实验</p>
     <h2 class="reveal">数据集构建与评估指标</h2>
@@ -827,9 +863,9 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 </section>
 
 <!-- ============================================
-     SLIDE 10 — BASELINE RESULTS
+     SLIDE 11 — BASELINE RESULTS
      ============================================ -->
-<section class="slide content-slide" id="slide-10">
+<section class="slide content-slide" id="slide-11">
   <div class="slide-content">
     <p class="section-label reveal">05 实验结果</p>
     <h2 class="reveal">纯向量检索基线表现</h2>
@@ -877,9 +913,9 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 </section>
 
 <!-- ============================================
-     SLIDE 11 — KG CROSS-DOCUMENT
+     SLIDE 12 — KG CROSS-DOCUMENT
      ============================================ -->
-<section class="slide content-slide" id="slide-11">
+<section class="slide content-slide" id="slide-12">
   <div class="slide-content">
     <p class="section-label reveal">05 实验结果</p>
     <h2 class="reveal">知识图谱增强检索 —— 跨文档场景</h2>
@@ -906,9 +942,9 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 </section>
 
 <!-- ============================================
-     SLIDE 12 — CHUNK SIZE ABLATION
+     SLIDE 13 — CHUNK SIZE ABLATION
      ============================================ -->
-<section class="slide content-slide" id="slide-12">
+<section class="slide content-slide" id="slide-13">
   <div class="slide-content">
     <p class="section-label reveal">05 实验结果</p>
     <h2 class="reveal">Chunk粒度消融 — 7500 vs 2500 词元</h2>
@@ -940,9 +976,9 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 </section>
 
 <!-- ============================================
-     SLIDE 13 — SUMMARY
+     SLIDE 14 — SUMMARY
      ============================================ -->
-<section class="slide content-slide conclusion-slide" id="slide-13">
+<section class="slide content-slide conclusion-slide" id="slide-14">
   <div class="slide-content">
     <p class="section-label reveal">06 总结</p>
     <h2 class="reveal">主要工作</h2>
@@ -973,9 +1009,9 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 </section>
 
 <!-- ============================================
-     SLIDE 14 — FUTURE WORK
+     SLIDE 15 — FUTURE WORK
      ============================================ -->
-<section class="slide content-slide" id="slide-14">
+<section class="slide content-slide" id="slide-15">
   <div class="slide-content">
     <p class="section-label reveal">06 展望</p>
     <h2 class="reveal">未来改进方向</h2>
@@ -992,9 +1028,9 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 </section>
 
 <!-- ============================================
-     SLIDE 15 — THANK YOU
+     SLIDE 16 — THANK YOU
      ============================================ -->
-<section class="slide thanks-slide" id="slide-15">
+<section class="slide thanks-slide" id="slide-16">
   <div class="slide-content">
     <div class="top-rule reveal" style="width: clamp(60px, 10vw, 120px); height: 1px; background: var(--accent); margin-bottom: clamp(1.5rem, 4vh, 3rem);"></div>
     <h1 class="thanks-title reveal">敬请各位老师批评指正</h1>
