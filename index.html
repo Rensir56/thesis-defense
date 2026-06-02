@@ -552,24 +552,25 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
     <div class="flow-cards reveal" style="margin-top: clamp(0.5rem, 1.5vh, 1rem);">
       <div class="flow-card">
         <p class="flow-num">I</p>
-        <p class="flow-title">朴素 RAG </p>
-        <p class="flow-desc">"检索—阅读"线性流程，简单有效但检索质量与生成忠实度不足</p>
+        <p class="flow-title" style="font-size: clamp(1rem, 1.5vw, 1.35rem);">朴素 RAG </p>
+        <p class="flow-desc" style="font-size: var(--body-size);">"检索—阅读"线性流程，简单有效但检索质量与生成忠实度不足</p>
       </div>
       <span class="flow-arrow">&rarr;</span>
       <div class="flow-card">
         <p class="flow-num">II</p>
-        <p class="flow-title">高级 RAG </p>
-        <p class="flow-desc">预检索优化 + 后检索处理：查询重写、重排序，提升整体表现</p>
+        <p class="flow-title" style="font-size: clamp(1rem, 1.5vw, 1.35rem);">高级 RAG </p>
+        <p class="flow-desc" style="font-size: var(--body-size);">预检索优化 + 后检索处理：查询重写、重排序，提升整体表现</p>
       </div>
       <span class="flow-arrow">&rarr;</span>
       <div class="flow-card">
         <p class="flow-num">III</p>
-        <p class="flow-title">模块化 RAG </p>
-        <p class="flow-desc">独立可插拔的功能模块组合，更高灵活性与可维护性</p>
+        <p class="flow-title" style="font-size: clamp(1rem, 1.5vw, 1.35rem);">模块化 RAG </p>
+        <p class="flow-desc" style="font-size: var(--body-size);">独立可插拔的功能模块组合，更高灵活性与可维护性</p>
       </div>
     </div>
-    <h3 class="reveal" style="margin-top: clamp(0.6rem, 1.5vh, 1rem);">举例说明模块化 RAG </h3>
-    <table class="data-table reveal" style="max-width: min(88vw, 820px);">
+    <div style="max-width: min(88vw, 820px); margin: 0 auto; width: 100%;">
+      <h3 class="reveal" style="margin: clamp(0.6rem, 1.5vh, 1rem) 0 0.4rem; text-align: left;">举例说明模块化 RAG </h3>
+      <table class="data-table reveal" style="max-width: none; width: 100%; margin: 0; font-size: var(--body-size);">
       <thead><tr><th>模块</th><th>解决的问题</th><th>具体实践</th></tr></thead>
       <tbody>
         <tr><td><strong>搜索模块</strong></td><td>数据源单一，本地文档不够用</td><td>链接外部搜索引擎</td></tr>
@@ -579,6 +580,7 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
         <tr><td><strong>预测模块</strong></td><td>检索噪音大，不相关文档干扰生成</td><td>根据原问题，生成相关上下文信息，充盈原问题</td></tr>
       </tbody>
     </table>
+    </div>
   </div>
 </section>
 
@@ -782,7 +784,7 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
      ============================================ -->
 <section class="slide content-slide" id="slide-9">
   <div class="slide-content">
-    <p class="section-label reveal">06 评估实验</p>
+    <p class="section-label reveal">05 评估实验</p>
     <h2 class="reveal">数据集构建与评估指标</h2>
     <div class="two-col reveal" style="grid-template-columns: 1fr 1fr 1fr; max-width: min(95vw, 1050px); margin-top: clamp(0.3rem, 1vh, 0.8rem);">
       <div class="col">
@@ -828,7 +830,7 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
      ============================================ -->
 <section class="slide content-slide" id="slide-10">
   <div class="slide-content">
-    <p class="section-label reveal">06 实验结果</p>
+    <p class="section-label reveal">05 实验结果</p>
     <h2 class="reveal">纯向量检索基线表现</h2>
     <div class="two-col reveal" style="margin-top: clamp(0.3rem, 1vh, 0.8rem);">
       <div class="col">
@@ -876,7 +878,7 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
      ============================================ -->
 <section class="slide content-slide" id="slide-11">
   <div class="slide-content">
-    <p class="section-label reveal">06 实验结果</p>
+    <p class="section-label reveal">05 实验结果</p>
     <h2 class="reveal">Chunk粒度消融 — 7500 vs 2500 词元</h2>
     <p class="reveal" style="font-size: var(--body-size); color: var(--text-secondary); margin-top: clamp(0.2rem, 0.5vh, 0.4rem);">同一评估集 · text-embedding-v4 · 余弦相似度排序</p>
     <table class="data-table reveal" style="max-width: min(85vw, 520px); margin-top: clamp(0.4rem, 1.2vh, 0.8rem);">
@@ -910,7 +912,7 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
      ============================================ -->
 <section class="slide content-slide" id="slide-12">
   <div class="slide-content">
-    <p class="section-label reveal">06 实验结果</p>
+    <p class="section-label reveal">05 实验结果</p>
     <h2 class="reveal">知识图谱增强检索 —— 跨文档场景</h2>
     <p class="reveal" style="font-size: var(--body-size); color: var(--text-secondary); margin-top: clamp(0.2rem, 0.5vh, 0.4rem);">12道跨文档综合问题 · 需同时参考两份文档</p>
     <table class="data-table reveal" style="max-width: min(85vw, 550px); margin-top: clamp(0.5rem, 1.5vh, 1rem);">
@@ -938,7 +940,7 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
      ============================================ -->
 <section class="slide content-slide conclusion-slide" id="slide-13">
   <div class="slide-content">
-    <p class="section-label reveal">07 总结</p>
+    <p class="section-label reveal">06 总结</p>
     <h2 class="reveal">主要工作</h2>
     <ol class="num-list reveal" style="margin-top: clamp(0.5rem, 1.5vh, 1rem);">
       <li><span class="idx">1</span> 完成多模态RAG问答系统的全栈工程实现 — Next.js 15 + PostgreSQL配合 pgvector 实现向量存储，文本/图像/音频三模态支持，串联外部模型 API 调用工作流</li>
@@ -957,7 +959,7 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
      ============================================ -->
 <section class="slide content-slide" id="slide-14">
   <div class="slide-content">
-    <p class="section-label reveal">07 展望</p>
+    <p class="section-label reveal">06 展望</p>
     <h2 class="reveal">未来改进方向</h2>
     <div class="two-col reveal" style="margin-top: clamp(0.4rem, 1.2vh, 0.8rem);">
       <div class="col">
