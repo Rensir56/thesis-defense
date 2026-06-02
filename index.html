@@ -840,6 +840,7 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
             <tr><td>R@1</td><td class="highlight">55.50%</td></tr>
             <tr><td>R@3</td><td>90.00%</td></tr>
             <tr><td>R@5</td><td>93.50%</td></tr>
+            <tr><td>NDCG@1</td><td>59.00%</td></tr>
             <tr><td>NDCG@5</td><td>79.18%</td></tr>
             <tr><td>MRR</td><td>75.83%</td></tr>
           </tbody>
@@ -862,6 +863,7 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
         <li><strong>R@1 55.50%</strong>：过半查询在首个结果即命中，2500 词元细粒度下排序精度可接受</li>
         <li><strong>R@5 93.50%</strong>：Top-5近乎全覆盖，答案信息未丢失，问题在于排序精度而非检索能力</li>
         <li><strong>MRR 75.83%</strong>：首个正确答案平均排在1.3位，排序稳定性良好</li>
+        <li><strong>NDCG@1 59.00%→NDCG@5 79.18%</strong>：首位相关性一般，但Top-5内相关结果快速累积，说明正确答案虽然不一定排第一，但密集分布在靠前位置</li>
       </ul>
       <p class="reveal" style="font-size: var(--body-size); color: var(--text-secondary); margin-top: clamp(0.3rem, 1vh, 0.6rem); margin-bottom: clamp(0.2rem, 0.6vh, 0.4rem);">题型差异分析</p>
       <ul class="bullet-list reveal">
@@ -886,13 +888,14 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
       <tbody>
         <tr><td>R@1</td><td>29.17%</td><td class="highlight">33.33%</td><td>+4.16pp</td></tr>
         <tr><td>R@5</td><td>70.83%</td><td class="highlight">79.17%</td><td>+8.34pp</td></tr>
+        <tr><td>NDCG@1</td><td>58.33%</td><td class="highlight">66.67%</td><td>+8.34pp</td></tr>
         <tr><td>MRR</td><td>68.75%</td><td class="highlight">74.31%</td><td>+5.56pp</td></tr>
       </tbody>
     </table>
     <div style="max-width: min(88vw, 780px); margin-top: clamp(0.5rem, 1.5vh, 1rem);">
       <p class="reveal" style="font-size: var(--body-size); color: var(--text-secondary); margin-bottom: clamp(0.2rem, 0.6vh, 0.4rem);">关键发现</p>
       <ul class="bullet-list reveal">
-        <li><strong>知识图谱辅助检索全面超越 baseline </strong>：三项指标均有提升，R@5 +8.34pp 最为显著</li>
+        <li><strong>知识图谱辅助检索全面超越 baseline </strong>：五项指标均有提升，R@5 和 NDCG@1 各 +8.34pp 最为显著，排序质量与命中率同步改善</li>
         <li><strong>跨文档实体链接</strong>：通过实体关系网络发现跨文档关联实体，自动扩展查询范围</li>
         <li><strong>消融设计保证归因</strong>：两配置仅在检索路径上不同（排序方式一致），差异唯一归因于知识图谱贡献</li>
         <li><strong>规模化潜力</strong>：随着文档规模和跨文档查询比例增加，知识图谱相对优势有望进一步扩大</li>
