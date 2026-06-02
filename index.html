@@ -793,7 +793,7 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
           <li>5份医疗/药学文档，共107,000字</li>
           <li>100对问答：事实型43 · 推理型33 · 比较型24</li>
           <li>12对跨文档综合问题</li>
-          <li>切片大小=2500词元 · text-embedding-v4 · 余弦相似度</li>
+          <li>切片大小=2500词元</li>
         </ul>
       </div>
       <div class="col">
@@ -874,9 +874,37 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 </section>
 
 <!-- ============================================
-     SLIDE 11 — CHUNK SIZE ABLATION
+     SLIDE 11 — KG CROSS-DOCUMENT
      ============================================ -->
 <section class="slide content-slide" id="slide-11">
+  <div class="slide-content">
+    <p class="section-label reveal">05 实验结果</p>
+    <h2 class="reveal">知识图谱增强检索 —— 跨文档场景</h2>
+    <p class="reveal" style="font-size: var(--body-size); color: var(--text-secondary); margin-top: clamp(0.2rem, 0.5vh, 0.4rem);">12道跨文档综合问题 · 需同时参考两份文档</p>
+    <table class="data-table reveal" style="max-width: min(85vw, 550px); margin-top: clamp(0.5rem, 1.5vh, 1rem);">
+      <thead><tr><th>指标</th><th>纯向量</th><th>知识图谱辅助</th><th>提升</th></tr></thead>
+      <tbody>
+        <tr><td>R@1</td><td>29.17%</td><td class="highlight">33.33%</td><td>+4.16pp</td></tr>
+        <tr><td>R@5</td><td>70.83%</td><td class="highlight">79.17%</td><td>+8.34pp</td></tr>
+        <tr><td>MRR</td><td>68.75%</td><td class="highlight">74.31%</td><td>+5.56pp</td></tr>
+      </tbody>
+    </table>
+    <div style="max-width: min(88vw, 780px); margin-top: clamp(0.5rem, 1.5vh, 1rem);">
+      <p class="reveal" style="font-size: var(--body-size); color: var(--text-secondary); margin-bottom: clamp(0.2rem, 0.6vh, 0.4rem);">关键发现</p>
+      <ul class="bullet-list reveal">
+        <li><strong>知识图谱辅助检索全面超越 baseline </strong>：三项指标均有提升，R@5 +8.34pp 最为显著</li>
+        <li><strong>跨文档实体链接</strong>：通过实体关系网络发现跨文档关联实体，自动扩展查询范围</li>
+        <li><strong>消融设计保证归因</strong>：两配置仅在检索路径上不同（排序方式一致），差异唯一归因于知识图谱贡献</li>
+        <li><strong>规模化潜力</strong>：随着文档规模和跨文档查询比例增加，知识图谱相对优势有望进一步扩大</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 12 — CHUNK SIZE ABLATION
+     ============================================ -->
+<section class="slide content-slide" id="slide-12">
   <div class="slide-content">
     <p class="section-label reveal">05 实验结果</p>
     <h2 class="reveal">Chunk粒度消融 — 7500 vs 2500 词元</h2>
@@ -902,34 +930,6 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
         <li>大 chunk 利于答案完整匹配，但混入大量无关信息，生成环节引入噪声</li>
         <li>小 chunk 利于精确定位与溯源，但拆散知识单元，对排序模型提出更高要求</li>
         <li>本次评估选择 2500 词元：更真实衡量排序能力，贴近企业知识库实际场景</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================
-     SLIDE 12 — KG CROSS-DOCUMENT
-     ============================================ -->
-<section class="slide content-slide" id="slide-12">
-  <div class="slide-content">
-    <p class="section-label reveal">05 实验结果</p>
-    <h2 class="reveal">知识图谱增强检索 —— 跨文档场景</h2>
-    <p class="reveal" style="font-size: var(--body-size); color: var(--text-secondary); margin-top: clamp(0.2rem, 0.5vh, 0.4rem);">12道跨文档综合问题 · 需同时参考两份文档</p>
-    <table class="data-table reveal" style="max-width: min(85vw, 550px); margin-top: clamp(0.5rem, 1.5vh, 1rem);">
-      <thead><tr><th>指标</th><th>纯向量</th><th>知识图谱辅助</th><th>提升</th></tr></thead>
-      <tbody>
-        <tr><td>R@1</td><td>29.17%</td><td class="highlight">33.33%</td><td>+4.16pp</td></tr>
-        <tr><td>R@5</td><td>70.83%</td><td class="highlight">79.17%</td><td>+8.34pp</td></tr>
-        <tr><td>MRR</td><td>68.75%</td><td class="highlight">74.31%</td><td>+5.56pp</td></tr>
-      </tbody>
-    </table>
-    <div style="max-width: min(88vw, 780px); margin-top: clamp(0.5rem, 1.5vh, 1rem);">
-      <p class="reveal" style="font-size: var(--body-size); color: var(--text-secondary); margin-bottom: clamp(0.2rem, 0.6vh, 0.4rem);">关键发现</p>
-      <ul class="bullet-list reveal">
-        <li><strong>知识图谱辅助检索全面超越 baseline </strong>：三项指标均有提升，R@5 +8.34pp 最为显著</li>
-        <li><strong>跨文档实体链接</strong>：通过实体关系网络发现跨文档关联实体，自动扩展查询范围</li>
-        <li><strong>消融设计保证归因</strong>：两配置仅在检索路径上不同（排序方式一致），差异唯一归因于知识图谱贡献</li>
-        <li><strong>规模化潜力</strong>：随着文档规模和跨文档查询比例增加，知识图谱相对优势有望进一步扩大</li>
       </ul>
     </div>
   </div>
