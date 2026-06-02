@@ -721,6 +721,7 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
         <div class="highlight-box" style="max-width: none; padding: clamp(0.5rem, 1.2vw, 0.8rem) clamp(0.6rem, 1.4vw, 1rem);">
           <p style="font-style: normal; font-weight: 600; color: var(--accent); font-size: var(--body-size);">01 KG（知识图谱）-Chunk 双向索引</p>
           <p style="font-style: normal; font-size: var(--body-size); color: var(--text-secondary); line-height: 1.4;">ChunkEntity 关联表桥接向量存储层与知识图谱层，填补"由实体找文档"的反向检索通路</p>
+          <p style="font-style: normal; font-size: var(--body-size); color: var(--text-secondary); line-height: 1.4;">ChunkEntity 不是取代 LightRAG 内部的映射，而是把它从图结构里提取出来，变成数据库层的公共基础设施</p>
         </div>
         <div class="highlight-box" style="max-width: none; padding: clamp(0.5rem, 1.2vw, 0.8rem) clamp(0.6rem, 1.4vw, 1rem);">
           <p style="font-style: normal; font-weight: 600; color: var(--accent); font-size: var(--body-size);">02 查询自适应路由</p>
