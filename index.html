@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>毕业论文答辩 — 融合知识图谱与向量检索的多模态RAG问答系统</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
+<style>
+/* ===========================================
+   CSS CUSTOM PROPERTIES — Paper & Ink Theme
+   =========================================== */
+:root {
+  --bg-cream: #faf9f7;
+  --text-primary: #1a1a1a;
+  --text-secondary: #5c5c5c;
+  --text-muted: #8a8782;
+  --accent: #9b2c2c;
+  --accent-light: rgba(155,44,44,0.08);
+  --thin-line: #d4cfc8;
+  --card-bg: #f4f1ec;
+
+  --font-display: 'Cormorant Garamond', 'Noto Serif SC', serif;
+  --font-body: 'Source Serif 4', 'Noto Serif SC', serif;
+
+  --title-size: clamp(2rem, 6vw, 4.5rem);
+  --h2-size: clamp(1.5rem, 3.8vw, 2.8rem);
+  --h3-size: clamp(1.1rem, 2.6vw, 1.7rem);
+  --body-size: clamp(0.85rem, 1.6vw, 1.25rem);
+  --small-size: clamp(0.7rem, 1.1vw, 0.9rem);
+
+  --slide-padding: clamp(1.5rem, 5vw, 4.5rem);
+  --content-gap: clamp(0.5rem, 2vw, 1.8rem);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ===========================================
+   VIEWPORT FITTING — MANDATORY BASE STYLES
+   =========================================== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow-x: hidden; }
+html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+
+.slide {
+  width: 100vw; height: 100vh; height: 100dvh;
+  overflow: hidden; scroll-snap-align: start;
+  display: flex; flex-direction: column; position: relative;
+  background: var(--bg-cream);
+  font-family: var(--font-body);
+  color: var(--text-primary);
+}
+
+.slide-content {
+  flex: 1; display: flex; flex-direction: column;
+  justify-content: center;
+  max-height: 100%; overflow: hidden;
+  padding: var(--slide-padding);
+  position: relative; z-index: 1;
+}
+
+/* ===========================================
+   NAVIGATION
+   =========================================== */
+.nav-dots {
+  position: fixed; right: clamp(0.8rem, 2vw, 1.5rem);
+  top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: clamp(6px, 1.2vh, 12px);
+  z-index: 1000;
+}
+.nav-dot {
+  width: clamp(6px, 0.8vw, 10px); height: clamp(6px, 0.8vw, 10px);
+  border-radius: 50%; background: var(--thin-line);
+  cursor: pointer; transition: all 0.3s var(--ease-out);
+  border: none;
+}
+.nav-dot.active { background: var(--accent); transform: scale(1.4); }
+
+.progress-bar {
+  position: fixed; top: 0; left: 0; height: 2px;
+  background: var(--accent); z-index: 1001;
+  transition: width 0.3s ease;
+}
+
+/* ===========================================
+   TITLE SLIDE (Slide 1)
+   =========================================== */
+.title-slide .slide-content {
+  align-items: center; text-align: center;
+}
+
+.title-slide .top-rule {
+  width: clamp(60px, 10vw, 120px); height: 1px;
+  background: var(--accent); margin: 0 auto clamp(1.5rem, 4vh, 3rem);
+}
+
+.title-slide .tagline {
+  font-family: var(--font-body); font-weight: 400;
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+  color: var(--text-secondary); letter-spacing: 0.28em;
+  text-transform: uppercase; margin-bottom: clamp(0.8rem, 2vh, 1.5rem);
+}
+
+.title-slide .title {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(2.2rem, 6.5vw, 5rem);
+  line-height: 1.2; max-width: min(88vw, 800px);
+}
+
+.title-slide .divider {
+  display: flex; align-items: center; gap: clamp(0.5rem, 1.5vw, 1rem);
+  margin: clamp(1.2rem, 3vh, 2.5rem) 0;
+}
+.title-slide .divider .line { width: clamp(30px, 5vw, 60px); height: 1px; background: var(--accent); }
+.title-slide .divider .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); }
+
+.title-slide .subtitle {
+  font-family: var(--font-body); font-weight: 400; font-style: italic;
+  font-size: var(--body-size); color: var(--text-secondary);
+}
+
+.title-slide .meta {
+  font-family: var(--font-body); font-size: var(--body-size);
+  color: var(--text-muted); letter-spacing: 0.12em;
+}
+
+/* Left accent line for title slide */
+.title-slide::before {
+  content: ''; position: absolute; left: clamp(2rem, 5vw, 5rem);
+  top: 18%; bottom: 18%; width: 1px; background: var(--thin-line);
+}
+
+/* ===========================================
+   SECTION SLIDE (Slide 2 — Outline)
+   =========================================== */
+.section-slide .slide-content {
+  padding-left: clamp(3rem, 8vw, 8rem);
+}
+
+.section-slide .section-num {
+  font-family: var(--font-display); font-size: clamp(0.7rem, 1.1vw, 0.9rem);
+  color: var(--accent); letter-spacing: 0.2em; margin-bottom: clamp(0.3rem, 1vh, 0.8rem);
+}
+
+.section-slide h2 {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: var(--h2-size); line-height: 1.2;
+  margin-bottom: clamp(1.5rem, 4vh, 2.5rem);
+}
+
+.toc-list { list-style: none; display: flex; flex-direction: column; gap: clamp(0.5rem, 1.5vh, 1rem); }
+.toc-item {
+  display: flex; align-items: baseline; gap: clamp(0.6rem, 1.5vw, 1.2rem);
+  font-family: var(--font-body); font-size: var(--body-size);
+  color: var(--text-secondary); padding: clamp(0.3rem, 0.8vh, 0.6rem) 0;
+}
+.toc-num { font-family: var(--font-display); font-weight: 600; color: var(--accent);
+  font-size: clamp(0.8rem, 1.4vw, 1.1rem); min-width: clamp(1.2rem, 2.5vw, 2rem); }
+.toc-line {
+  flex: 1; height: 1px; background: var(--thin-line);
+  margin: 0 clamp(0.3rem, 1vw, 0.8rem);
+}
+
+/* ===========================================
+   CONTENT SLIDE (Generic)
+   =========================================== */
+.content-slide .slide-content {
+  padding-left: clamp(2.5rem, 7vw, 7rem);
+  padding-right: clamp(2.5rem, 7vw, 7rem);
+}
+
+.content-slide .section-label {
+  font-family: var(--font-body); font-size: var(--small-size);
+  color: var(--accent); letter-spacing: 0.2em; text-transform: uppercase;
+  margin-bottom: clamp(0.4rem, 1vh, 0.8rem);
+}
+
+.content-slide h2 {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: var(--h2-size); line-height: 1.2;
+  margin-bottom: clamp(1rem, 2.5vh, 2rem);
+}
+
+.content-slide h3 {
+  font-family: var(--font-display); font-weight: 500; font-style: italic;
+  font-size: var(--h3-size); color: var(--text-secondary);
+  margin-bottom: clamp(0.4rem, 1vh, 0.8rem);
+}
+
+/* Bullet list */
+.bullet-list {
+  list-style: none; display: flex; flex-direction: column;
+  gap: clamp(0.3rem, 1vh, 0.7rem);
+  max-width: min(90vw, 750px);
+}
+.bullet-list li {
+  font-family: var(--font-body); font-size: var(--body-size);
+  line-height: 1.45; color: var(--text-secondary);
+  padding-left: clamp(1rem, 2vw, 1.5rem); position: relative;
+}
+.bullet-list li::before {
+  content: ''; position: absolute; left: 0;
+  top: clamp(0.4rem, 1.2vh, 0.6rem);
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--accent); opacity: 0.5;
+}
+.bullet-list li strong { color: var(--text-primary); font-weight: 600; }
+
+
+/* ===========================================
+   FLOW CARDS — horizontal cards with arrows
+   =========================================== */
+.flow-cards {
+  display: flex; align-items: center; justify-content: center;
+  gap: clamp(0.4rem, 1vw, 0.8rem);
+  max-width: min(92vw, 900px); margin: 0 auto;
+}
+.flow-card {
+  flex: 1; min-width: 0;
+  background: var(--card-bg); border: 1px solid var(--thin-line);
+  padding: clamp(0.7rem, 1.8vw, 1.3rem);
+  text-align: center;
+}
+.flow-card .flow-num {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  color: var(--accent); margin-bottom: clamp(0.2rem, 0.5vh, 0.4rem);
+}
+.flow-card .flow-title {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: clamp(0.85rem, 1.3vw, 1.15rem);
+  margin-bottom: clamp(0.15rem, 0.4vh, 0.3rem);
+}
+.flow-card .flow-desc {
+  font-family: var(--font-body); font-size: var(--small-size);
+  color: var(--text-secondary); line-height: 1.4;
+}
+.flow-arrow {
+  font-family: var(--font-display); font-size: clamp(1rem, 1.8vw, 1.5rem);
+  color: var(--accent); flex-shrink: 0; opacity: 0.6;
+}
+
+/* ===========================================
+   QUADRANT GRID — 2×2 with cross-axis
+   =========================================== */
+.quad-grid {
+  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+  max-width: min(92vw, 880px); margin: 0 auto;
+  position: relative;
+}
+.quad-grid::before,
+.quad-grid::after {
+  content: ''; position: absolute; background: var(--accent); opacity: 0.25; z-index: 0;
+}
+.quad-grid::before {
+  /* Vertical axis */
+  left: 50%; top: 5%; bottom: 5%; width: 1px;
+  transform: translateX(-50%);
+}
+.quad-grid::after {
+  /* Horizontal axis */
+  top: 50%; left: 5%; right: 5%; height: 1px;
+  transform: translateY(-50%);
+}
+.quad-cell {
+  position: relative; z-index: 1;
+  padding: clamp(0.6rem, 1.6vw, 1.2rem);
+  display: flex; flex-direction: column; gap: clamp(0.2rem, 0.5vh, 0.4rem);
+}
+.quad-cell .quad-label {
+  font-family: var(--font-display); font-weight: 600; font-style: italic;
+  font-size: var(--h3-size); color: var(--accent);
+}
+.quad-cell .quad-items {
+  list-style: none; display: flex; flex-direction: column;
+  gap: clamp(0.15rem, 0.4vh, 0.3rem);
+}
+.quad-cell .quad-items li {
+  font-family: var(--font-body); font-size: var(--body-size);
+  color: var(--text-secondary); line-height: 1.4;
+  padding-left: clamp(0.6rem, 1.2vw, 1rem); position: relative;
+}
+.quad-cell .quad-items li::before {
+  content: ''; position: absolute; left: 0;
+  top: clamp(0.3rem, 0.7vh, 0.45rem);
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--accent); opacity: 0.4;
+}
+.quad-cell .quad-items li strong { color: var(--text-primary); font-weight: 600; }
+
+@media (max-width: 600px) {
+  .quad-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
+  .quad-grid::before, .quad-grid::after { display: none; }
+}
+
+/* ===========================================
+   MODULE GRID — 3+2 split with dividers
+   =========================================== */
+.module-grid {
+  max-width: min(88vw, 780px); margin: 0 auto;
+  display: flex; flex-direction: column;
+}
+.module-row {
+  display: flex; justify-content: center;
+  position: relative; padding: clamp(0.6rem, 1.5vh, 1.2rem) 0;
+}
+/* Horizontal divider between rows */
+.module-row + .module-row {
+  border-top: 1px solid var(--thin-line);
+}
+.module-cell {
+  flex: 1; min-width: 0; max-width: 240px;
+  text-align: center; padding: 0 clamp(0.4rem, 1.2vw, 1rem);
+  position: relative;
+}
+/* Vertical divider between cells */
+.module-cell + .module-cell {
+  border-left: 1px solid var(--thin-line);
+}
+.module-cell .m-num {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.3rem, 2.2vw, 1.8rem);
+  color: var(--accent); margin-bottom: clamp(0.15rem, 0.3vh, 0.3rem);
+}
+.module-cell .m-title {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: clamp(1rem, 1.6vw, 1.35rem);
+  margin-bottom: clamp(0.15rem, 0.3vh, 0.3rem);
+}
+.module-cell .m-desc {
+  font-family: var(--font-body); font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+  color: var(--text-secondary); line-height: 1.4;
+}
+/* Bottom row: only 2 cells, center them */
+.module-row.bottom .module-cell {
+  max-width: 280px;
+}
+
+/* ===========================================
+   TWO-COLUMN LAYOUT
+   =========================================== */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  max-width: min(92vw, 950px);
+}
+.two-col .col { display: flex; flex-direction: column; gap: var(--content-gap); }
+
+/* ===========================================
+   QUOTE / HIGHLIGHT BOX
+   =========================================== */
+.highlight-box {
+  border-left: 2px solid var(--accent);
+  background: var(--accent-light);
+  padding: clamp(0.6rem, 1.5vw, 1.2rem) clamp(0.8rem, 2vw, 1.5rem);
+  max-width: min(88vw, 650px);
+}
+.highlight-box p {
+  font-family: var(--font-body); font-size: var(--body-size);
+  color: var(--text-primary); line-height: 1.5; font-style: italic;
+}
+
+/* ===========================================
+   TABLE STYLES
+   =========================================== */
+.data-table {
+  width: 100%; max-width: min(90vw, 800px);
+  border-collapse: collapse;
+  font-family: var(--font-body); font-size: var(--small-size);
+}
+.data-table th {
+  font-family: var(--font-display); font-weight: 600;
+  text-align: left; padding: clamp(0.3rem, 0.8vh, 0.6rem) clamp(0.4rem, 1vw, 0.8rem);
+  border-bottom: 2px solid var(--accent); color: var(--accent);
+}
+.data-table td {
+  padding: clamp(0.25rem, 0.7vh, 0.5rem) clamp(0.4rem, 1vw, 0.8rem);
+  border-bottom: 1px solid var(--thin-line); color: var(--text-secondary);
+}
+.data-table .highlight { color: var(--accent); font-weight: 600; }
+.data-table .decline { color: #c41e3a; }
+
+/* ===========================================
+   CONCLUSION SLIDE
+   =========================================== */
+.conclusion-slide .num-list {
+  list-style: none; display: flex; flex-direction: column;
+  gap: clamp(0.3rem, 1vh, 0.7rem);
+  max-width: min(90vw, 780px);
+}
+.conclusion-slide .num-list li {
+  font-family: var(--font-body); font-size: var(--body-size);
+  line-height: 1.45; color: var(--text-secondary);
+  display: flex; gap: clamp(0.5rem, 1vw, 0.8rem);
+}
+.conclusion-slide .num-list li span.idx {
+  font-family: var(--font-display); font-weight: 700;
+  color: var(--accent); font-size: clamp(0.85rem, 1.3vw, 1.1rem);
+  flex-shrink: 0;
+}
+
+/* ===========================================
+   THANK YOU SLIDE
+   =========================================== */
+.thanks-slide .slide-content {
+  align-items: center; text-align: center;
+}
+.thanks-slide .thanks-title {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: clamp(2.2rem, 6.5vw, 5rem);
+  margin-bottom: clamp(1rem, 3vh, 2rem);
+}
+.thanks-slide .thanks-subtitle {
+  font-family: var(--font-body); font-weight: 400; font-style: italic;
+  font-size: var(--body-size); color: var(--text-secondary);
+}
+
+/* ===========================================
+   ANIMATIONS
+   =========================================== */
+.reveal {
+  opacity: 0; transform: translateY(22px);
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+}
+.slide.visible .reveal { opacity: 1; transform: translateY(0); }
+.reveal:nth-child(1) { transition-delay: 0.05s; }
+.reveal:nth-child(2) { transition-delay: 0.15s; }
+.reveal:nth-child(3) { transition-delay: 0.25s; }
+.reveal:nth-child(4) { transition-delay: 0.35s; }
+.reveal:nth-child(5) { transition-delay: 0.45s; }
+.reveal:nth-child(6) { transition-delay: 0.55s; }
+.reveal:nth-child(7) { transition-delay: 0.65s; }
+.reveal:nth-child(8) { transition-delay: 0.75s; }
+
+/* ===========================================
+   RESPONSIVE BREAKPOINTS
+   =========================================== */
+@media (max-height: 700px) {
+  :root {
+    --slide-padding: clamp(0.75rem, 3vw, 2rem);
+    --title-size: clamp(1.3rem, 4.5vw, 2.5rem);
+    --h2-size: clamp(1.1rem, 3.2vw, 1.8rem);
+    --body-size: clamp(0.7rem, 1.2vw, 0.95rem);
+  }
+}
+@media (max-height: 600px) {
+  :root {
+    --slide-padding: clamp(0.5rem, 2.5vw, 1.2rem);
+    --title-size: clamp(1.15rem, 4vw, 2rem);
+    --h2-size: clamp(0.95rem, 2.8vw, 1.4rem);
+    --body-size: clamp(0.65rem, 1.1vw, 0.85rem);
+    --content-gap: clamp(0.25rem, 0.8vw, 0.5rem);
+  }
+  .two-col { gap: clamp(0.5rem, 1.5vw, 1rem); }
+}
+@media (max-height: 500px) {
+  :root {
+    --slide-padding: clamp(0.3rem, 2vw, 0.8rem);
+    --title-size: clamp(1rem, 3.5vw, 1.6rem);
+    --body-size: clamp(0.6rem, 1vw, 0.8rem);
+  }
+}
+@media (max-width: 600px) {
+  .two-col { grid-template-columns: 1fr; }
+  .card-grid { grid-template-columns: 1fr; }
+  .flow-cards { flex-direction: column; }
+  .flow-arrow { transform: rotate(90deg); }
+  .content-slide .slide-content { padding-left: clamp(1rem, 4vw, 2rem); padding-right: clamp(1rem, 4vw, 2rem); }
+  .section-slide .slide-content { padding-left: clamp(1.2rem, 4vw, 2rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- Progress bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Navigation dots -->
+<nav class="nav-dots" id="navDots"></nav>
+
+<!-- ============================================
+     SLIDE 1 — TITLE
+     ============================================ -->
+<section class="slide title-slide" id="slide-1">
+  <div class="slide-content">
+    <div class="top-rule reveal"></div>
+    <p class="tagline reveal">本科毕业论文答辩</p>
+    <h1 class="title reveal">多模态交互的<br>知识库问答系统</h1>
+    <div class="divider reveal">
+      <span class="line"></span><span class="dot"></span><span class="line"></span>
+    </div>
+    <p style="margin-top: clamp(1.5rem, 4vh, 2.5rem);" class="meta reveal">答辩人：任炜烨 &nbsp;|&nbsp; 浙江大学 计算机科学与技术学院 &nbsp;|&nbsp; 2026</p>
+    <p class="meta reveal" style="margin-top: clamp(0.3rem, 0.8vh, 0.6rem);">指导老师：王强</p>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 2 — OUTLINE
+     ============================================ -->
+<section class="slide section-slide" id="slide-2">
+  <div class="slide-content">
+    <p class="section-num reveal">目录</p>
+    <h2 class="reveal">汇报提纲</h2>
+    <ul class="toc-list" style="max-width: min(85vw, 650px);">
+      <li class="toc-item reveal"><span class="toc-num">01</span> 研究背景与动机<span class="toc-line"></span></li>
+      <li class="toc-item reveal"><span class="toc-num">02</span> RAG研究现状与技术选型<span class="toc-line"></span></li>
+      <li class="toc-item reveal"><span class="toc-num">03</span> 系统整体架构与功能模块<span class="toc-line"></span></li>
+      <li class="toc-item reveal"><span class="toc-num">04</span> 知识图谱混合检索机制<span class="toc-line"></span></li>
+      <li class="toc-item reveal"><span class="toc-num">05</span> 多模态能力与 MCP 工具集成<span class="toc-line"></span></li>
+      <li class="toc-item reveal"><span class="toc-num">06</span> 检索效率评估与实验结果<span class="toc-line"></span></li>
+      <li class="toc-item reveal"><span class="toc-num">07</span> 总结与展望<span class="toc-line"></span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 3 — BACKGROUND & MOTIVATION
+     ============================================ -->
+<section class="slide content-slide" id="slide-3">
+  <div class="slide-content">
+    <p class="section-label reveal">01 研究背景</p>
+    <h2 class="reveal">企业文档管理中的"知识孤岛"困境</h2>
+    <div class="two-col reveal" style="margin-top: clamp(0.5rem, 1.5vh, 1rem);">
+      <div class="col">
+        <h3>核心痛点</h3>
+        <ul class="bullet-list">
+          <li>文档分散存储，缺乏<strong>统一管理平台</strong></li>
+          <li>关键词检索无法理解<strong>语义关联</strong></li>
+          <li>大模型直接问答存在<strong>幻觉与上下文窗口限制</strong></li>
+          <li>多模态内容（图片/音频/视频）被<strong>排除在检索体系之外</strong></li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3> RAG 技术的应对</h3>
+        <div class="highlight-box">
+          <p>"检索增强生成将信息检索与大语言模型结合 — 先从外部知识库检索相关内容，再作为上下文提供给模型，从根本上降低幻觉出现的概率。"</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 4 — RAG RESEARCH LANDSCAPE
+     ============================================ -->
+<section class="slide content-slide" id="slide-4">
+  <div class="slide-content">
+    <p class="section-label reveal">02 RAG 研究现状</p>
+    <h2 class="reveal">RAG技术范式演进</h2>
+    <div class="flow-cards reveal" style="margin-top: clamp(0.5rem, 1.5vh, 1rem);">
+      <div class="flow-card">
+        <p class="flow-num">I</p>
+        <p class="flow-title">朴素 RAG </p>
+        <p class="flow-desc">"检索—阅读"线性流程，简单有效但检索质量与生成忠实度不足</p>
+      </div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-card">
+        <p class="flow-num">II</p>
+        <p class="flow-title">高级 RAG </p>
+        <p class="flow-desc">预检索优化 + 后检索处理：查询重写、重排序，提升整体表现</p>
+      </div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-card">
+        <p class="flow-num">III</p>
+        <p class="flow-title">模块化 RAG </p>
+        <p class="flow-desc">独立可插拔的功能模块组合，更高灵活性与可维护性</p>
+      </div>
+    </div>
+    <h3 class="reveal" style="margin-top: clamp(0.6rem, 1.5vh, 1rem);">举例说明模块化 RAG </h3>
+    <table class="data-table reveal" style="max-width: min(88vw, 820px);">
+      <thead><tr><th>模块</th><th>解决的问题</th><th>具体实践</th></tr></thead>
+      <tbody>
+        <tr><td><strong>搜索模块</strong></td><td>数据源单一，本地文档不够用</td><td>链接外部搜索引擎</td></tr>
+        <tr><td><strong>RAG-Fusion</strong></td><td>查询理解片面，遗漏多角度信息</td><td>将单个问题拆解成多角度问题，并行查询+聚合结果</td></tr>
+        <tr><td><strong>记忆模块</strong></td><td>缺乏长期上下文，每次从头检索</td><td>引入上下文记忆，支持连续对话</td></tr>
+        <tr><td><strong>路由模块</strong></td><td>一刀切处理，简单复杂问题走同一条路</td><td>根据问题类型，选择合适的检索路径</td></tr>
+        <tr><td><strong>预测模块</strong></td><td>检索噪音大，不相关文档干扰生成</td><td>根据原问题，生成相关上下文信息，充盈原问题</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 5 — KG-ENHANCED RAG
+     ============================================ -->
+<section class="slide content-slide" id="slide-5">
+  <div class="slide-content">
+    <p class="section-label reveal">02 技术路线</p>
+    <h2 class="reveal">知识图谱增强RAG — GraphRAG vs LightRAG </h2>
+    <div class="two-col reveal" style="margin: clamp(0.5rem, 1.5vh, 1rem) auto 0;">
+      <div class="col">
+        <h3>GraphRAG</h3>
+        <ul class="bullet-list">
+          <li><strong>5步索引</strong>：切块 → 实体/关系抽取 → 摘要合成 → Leiden 社区检测 → 社区报告生成</li>
+          <li><strong>Global Search</strong>：Map-Reduce遍历社区摘要，预计算层次化全局知识视图</li>
+          <li><strong>优势</strong>：深度全局洞察力强，实体消歧策略完备，多跳推理精度高，可解释性强</li>
+          <li><strong>代价</strong>： Token 消耗数十倍于传统 RAG ，增量更新牵一发而动全身， Global Search 延迟可达分钟级</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3>LightRAG</h3>
+        <ul class="bullet-list">
+          <li><strong>3步索引</strong>：切块 → 实体/关系(+关键词)抽取 → 键值对去重</li>
+          <li><strong>低层检索</strong>：用具体实体名匹配节点 → 一跳邻居扩展 → 收集关联关系与文本块</li>
+          <li><strong>高层检索</strong>：用抽象主题关键词匹配关系边 → 聚合涉及的实体与语义上下文</li>
+          <li><strong>优势</strong>： Token 减少99%，增量仅追加节点/边，秒级响应</li>
+          <li><strong>代价</strong>：全局深度洞察弱于 GraphRAG ，实体消歧仅基于名称匹配，不处理时效冲突</li>
+        </ul>
+      </div>
+    </div>
+    <div class="highlight-box reveal" style="margin: clamp(0.6rem, 1.5vh, 1.2rem) auto 0; max-width: min(90vw, 820px);">
+      <p><strong>本文选型依据：</strong>系统面向企业知识库，文档更新频率高、数据规模中等，要求实时交互。LightRAG 的"按需检索 + 增量友好"设计更适合轻量化场景 — 无需社区重建，新文档直接追加，查询响应在秒级。避免 GraphRAG 的"Token 焚烧炉"索引成本和分钟级 Global Search 延迟。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 6 — TECHNOLOGY STACK
+     ============================================ -->
+<section class="slide content-slide" id="slide-6">
+  <div class="slide-content">
+    <p class="section-label reveal">技术基础</p>
+    <h2 class="reveal">系统核心技术栈</h2>
+    <div class="quad-grid reveal" style="margin-top: clamp(0.4rem, 1vh, 0.8rem);">
+      <!-- Top-Left: 多模态 -->
+      <div class="quad-cell">
+        <p class="quad-label">多模态</p>
+        <ul class="quad-items">
+          <li><strong>视觉理解</strong> — 图像编码 + 多模态融合 + 语言解码</li>
+          <li><strong>TTS 语音合成</strong> — 自回归 Transformer，零样本音色克隆</li>
+          <li><strong>ASR 语音识别</strong> — 音频-文本联合建模</li>
+        </ul>
+      </div>
+      <!-- Top-Right: 向量化与语义检索 -->
+      <div class="quad-cell">
+        <p class="quad-label">向量化与语义检索</p>
+        <ul class="quad-items">
+          <li><strong>pgvector</strong> — PostgreSQL 向量扩展，余弦相似度</li>
+          <li><strong>text-embedding-v4</strong> — 高维稠密向量，中英文编码</li>
+          <li><strong>重排序模型</strong> — 多源候选 chunk 统一精排</li>
+        </ul>
+      </div>
+      <!-- Bottom-Left: MCP -->
+      <div class="quad-cell">
+        <p class="quad-label">MCP 工具集成</p>
+        <ul class="quad-items">
+          <li><strong>Streamable HTTP</strong> — 会话管理 + JSON-RPC 2.0</li>
+          <li><strong>多服务器并行</strong> — 前缀机制，Function Calling 注入</li>
+          <li><strong>工具管理</strong> — 连接测试 · 工具浏览器 · 调用历史</li>
+        </ul>
+      </div>
+      <!-- Bottom-Right: 全栈框架 -->
+      <div class="quad-cell">
+        <p class="quad-label">全栈框架</p>
+        <ul class="quad-items">
+          <li><strong>Next.js 15</strong> — App Router，SSE 流式传输</li>
+          <li><strong>Prisma ORM</strong> — 类型安全，Chunk-Entity 关联表</li>
+          <li><strong>Jest</strong> — 双模式测试框架，单元测试 + 集成测试，覆盖全部业务领域</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 7 — SYSTEM ARCHITECTURE
+     ============================================ -->
+<section class="slide content-slide" id="slide-7">
+  <div class="slide-content">
+    <p class="section-label reveal">03 系统架构</p>
+    <h2 class="reveal">五大功能模块</h2>
+    <div class="module-grid reveal" style="margin-top: clamp(0.4rem, 1vh, 0.8rem);">
+      <!-- Top row: 3 modules -->
+      <div class="module-row">
+        <div class="module-cell">
+          <p class="m-num">01</p>
+          <p class="m-title">登录认证</p>
+          <p class="m-desc">bcrypt 哈希 + 加密会话 + 中间件</p>
+        </div>
+        <div class="module-cell">
+          <p class="m-num">02</p>
+          <p class="m-title">组织管理</p>
+          <p class="m-desc">创建/加入/退出/解散 · 三级可见性</p>
+        </div>
+        <div class="module-cell">
+          <p class="m-num">03</p>
+          <p class="m-title">知识库管理</p>
+          <p class="m-desc">文档解析 + 向量化 + KG 索引</p>
+        </div>
+      </div>
+      <!-- Bottom row: 2 modules -->
+      <div class="module-row bottom">
+        <div class="module-cell">
+          <p class="m-num">04</p>
+          <p class="m-title">MCP 工具集成</p>
+          <p class="m-desc">多服务器接入 + 自主调用</p>
+        </div>
+        <div class="module-cell">
+          <p class="m-num">05</p>
+          <p class="m-title">对话助手</p>
+          <p class="m-desc">SSE 流式 + 多模态 + 可视化</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 7 — KG HYBRID RETRIEVAL
+     ============================================ -->
+<section class="slide content-slide" id="slide-8">
+  <div class="slide-content">
+    <p class="section-label reveal">04 核心创新</p>
+    <h2 class="reveal">系统核心创新点</h2>
+    <div class="module-grid reveal" style="margin-top: clamp(0.4rem, 1vh, 0.8rem); max-width: min(88vw, 820px);">
+      <div class="module-row">
+        <div class="module-cell">
+          <p class="m-num">01</p>
+          <p class="m-title">多模态实体链接</p>
+          <p class="m-desc">视觉理解→实体向量→ ChunkEntity 关联表→反向索引文档，打通视觉·知识图谱·RAG 三模块</p>
+        </div>
+        <div class="module-cell">
+          <p class="m-num">02</p>
+          <p class="m-title">MCP 工具自主调用</p>
+          <p class="m-desc">Streamable HTTP + JSON-RPC 2.0，多服务器并行，Function Calling 注入 LLM 自主决策</p>
+        </div>
+      </div>
+      <div class="module-row bottom">
+        <div class="module-cell">
+          <p class="m-num">03</p>
+          <p class="m-title">查询自适应路由</p>
+          <p class="m-desc">大语言模型检索前判断复杂度 → 简单查询纯向量≈200ms，复杂查询完整知识图谱路径≈2-5s</p>
+        </div>
+        <div class="module-cell">
+          <p class="m-num">04</p>
+          <p class="m-title">连通分量图可视化</p>
+          <p class="m-desc">知识图谱检索结果按连通分量划分 → 交互式力导向图，直观展示实体关联拓扑</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 8 — MULTIMODAL & MCP
+     ============================================ -->
+<section class="slide content-slide" id="slide-9">
+  <div class="slide-content">
+    <p class="section-label reveal">05 多模态与工具集成</p>
+    <h2 class="reveal">多模态能力与 MCP 外部工具调用</h2>
+    <div class="two-col reveal" style="margin-top: clamp(0.5rem, 1.5vh, 1rem);">
+      <div class="col">
+        <h3>多模态三链路</h3>
+        <ul class="bullet-list">
+          <li><strong>视觉理解</strong> — 聊天图片附件 + 上传文档图片，Base64 → qwen3-vl-flash</li>
+          <li><strong> TTS 语音合成</strong> — 回复文本流式完成后合成语音，自动附加音频播放</li>
+          <li><strong> ASR 语音识别</strong> — 前端音频 Base64 提交，逐 token 流式返回文字</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3>MCP 工具集成</h3>
+        <ul class="bullet-list">
+          <li>Streamable HTTP 传输模式 + JSON-RPC 2.0</li>
+          <li>工具名称前缀机制：<strong>server__tool</strong></li>
+          <li>Function Calling 格式注入 LLM 上下文 → 模型自主判断调用</li>
+          <li>连接测试 · 工具浏览器 · 调用历史</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 9 — EVALUATION SETUP
+     ============================================ -->
+<section class="slide content-slide" id="slide-10">
+  <div class="slide-content">
+    <p class="section-label reveal">06 评估实验</p>
+    <h2 class="reveal">数据集构建与评估指标</h2>
+    <div class="two-col reveal" style="grid-template-columns: 1fr 1fr 1fr; max-width: min(95vw, 1050px); margin-top: clamp(0.3rem, 1vh, 0.8rem);">
+      <div class="col">
+        <h3>数据集</h3>
+        <ul class="bullet-list">
+          <li>5份医疗/药学文档，共107,000字</li>
+          <li>100对问答：事实型43 · 推理型33 · 比较型24</li>
+          <li>12对跨文档综合问题</li>
+          <li>切片大小=2500词元 · text-embedding-v4 · 余弦相似度</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3>三项评估指标</h3>
+        <ul class="bullet-list">
+          <li><strong>Recall@K</strong> — Top-K是否命中正确chunk</li>
+          <li><strong>NDCG@K</strong> — 命中位置的质量加权</li>
+          <li><strong>MRR</strong> — 首个正确答案排名的倒数均值</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3>问答集示例</h3>
+        <div class="highlight-box" style="margin-top: clamp(0.2rem, 0.6vh, 0.5rem); padding: clamp(0.4rem, 1vw, 0.8rem); max-width: none; overflow: hidden;">
+          <pre style="font-family: 'Source Serif 4', serif; font-size: clamp(0.62rem, 1.05vw, 0.8rem); line-height: 1.45; color: var(--text-primary); white-space: pre-wrap; margin: 0;"><span style="color: var(--accent);">{</span>
+  <span style="color: var(--accent);">"id"</span>: <span style="color: #5a7c6a;">"ap-factual-004"</span>,
+  <span style="color: var(--accent);">"question"</span>: <span style="color: #5a7c6a;">"痰浊闭阻证的临床表现是什么？"</span>,
+  <span style="color: var(--accent);">"expectedAnswer"</span>: <span style="color: #5a7c6a;">"胸痛以胸闷痛为特点，症见痰多体胖，头晕多寐，身体困重，倦怠乏力，大便黏腻不爽。舌苔厚腻，脉滑。痰浊证候要素总得分≥8分即可诊断。"</span>,
+  <span style="color: var(--accent);">"questionType"</span>: <span style="color: #5a7c6a;">"factual"</span>,
+  <span style="color: var(--accent);">"relevantDocumentName"</span>: <span style="color: #5a7c6a;">"中国心血管病风险评估和管理指南.docx"</span>
+<span style="color: var(--accent);">}</span></pre>
+        </div>
+      </div>
+    </div>
+    <h3 class="reveal" style="margin-top: clamp(0.5rem, 1.5vh, 1rem);">消融对比设计</h3>
+    <ul class="bullet-list reveal">
+      <li><strong>Baseline</strong>：纯向量检索 + 余弦相似度排序</li>
+      <li><strong>知识图谱辅助检索</strong>：知识图谱路径候选chunk + 向量余弦排序（<em>排序方式一致，差异唯一归因于知识图谱路径贡献</em>）</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 11 — BASELINE RESULTS
+     ============================================ -->
+<section class="slide content-slide" id="slide-11">
+  <div class="slide-content">
+    <p class="section-label reveal">06 实验结果</p>
+    <h2 class="reveal">纯向量检索基线表现</h2>
+    <div class="two-col reveal" style="margin-top: clamp(0.3rem, 1vh, 0.8rem);">
+      <div class="col">
+        <table class="data-table">
+          <thead><tr><th>指标</th><th>得分</th></tr></thead>
+          <tbody>
+            <tr><td>R@1</td><td class="highlight">55.50%</td></tr>
+            <tr><td>R@3</td><td>90.00%</td></tr>
+            <tr><td>R@5</td><td>93.50%</td></tr>
+            <tr><td>NDCG@5</td><td>79.18%</td></tr>
+            <tr><td>MRR</td><td>75.83%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col">
+        <table class="data-table">
+          <thead><tr><th>题型</th><th>R@1</th><th>MRR</th></tr></thead>
+          <tbody>
+            <tr><td>推理型(33)</td><td class="highlight">60.61%</td><td>81.69%</td></tr>
+            <tr><td>事实型(43)</td><td>56.98%</td><td>76.26%</td></tr>
+            <tr><td>比较型(24)</td><td>37.50%</td><td>67.01%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div style="max-width: min(88vw, 780px); margin-top: clamp(0.4rem, 1.2vh, 0.8rem);">
+      <p class="reveal" style="font-size: var(--body-size); color: var(--text-secondary); margin-bottom: clamp(0.2rem, 0.6vh, 0.4rem);">指标解读</p>
+      <ul class="bullet-list reveal">
+        <li><strong>R@1 55.50%</strong>：过半查询在首个结果即命中，2500 词元细粒度下排序精度可接受</li>
+        <li><strong>R@5 93.50%</strong>：Top-5近乎全覆盖，答案信息未丢失，问题在于排序精度而非检索能力</li>
+        <li><strong>MRR 75.83%</strong>：首个正确答案平均排在1.3位，排序稳定性良好</li>
+      </ul>
+      <p class="reveal" style="font-size: var(--body-size); color: var(--text-secondary); margin-top: clamp(0.3rem, 1vh, 0.6rem); margin-bottom: clamp(0.2rem, 0.6vh, 0.4rem);">题型差异分析</p>
+      <ul class="bullet-list reveal">
+        <li><strong>推理型最优</strong>：因果机制段落语义密度高， embedding 对因果逻辑编码能力强</li>
+        <li><strong>事实型稳健</strong>：数值/定义在细粒度 chunk 中信息完整性有所损失，但仍可Top-3覆盖</li>
+        <li><strong>比较型最弱</strong>：对比双方被切分至不同 chunk ，单一向量无法聚合跨 chunk 的分散信息</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 12 — CHUNK SIZE ABLATION
+     ============================================ -->
+<section class="slide content-slide" id="slide-12">
+  <div class="slide-content">
+    <p class="section-label reveal">06 实验结果</p>
+    <h2 class="reveal">Chunk粒度消融 — 7500 vs 2500 词元</h2>
+    <p class="reveal" style="font-size: var(--body-size); color: var(--text-secondary); margin-top: clamp(0.2rem, 0.5vh, 0.4rem);">同一评估集 · text-embedding-v4 · 余弦相似度排序</p>
+    <table class="data-table reveal" style="max-width: min(85vw, 520px); margin-top: clamp(0.4rem, 1.2vh, 0.8rem);">
+      <thead><tr><th>指标</th><th>chunk=7500</th><th>chunk=2500</th><th>变化</th></tr></thead>
+      <tbody>
+        <tr><td>R@1</td><td>80.68%</td><td class="highlight">55.50%</td><td class="decline">−25.18pp</td></tr>
+        <tr><td>R@3</td><td>96.59%</td><td>90.00%</td><td class="decline">−6.59pp</td></tr>
+        <tr><td>R@5</td><td>98.86%</td><td>93.50%</td><td class="decline">−5.36pp</td></tr>
+        <tr><td>MRR</td><td>88.74%</td><td>75.83%</td><td class="decline">−12.91pp</td></tr>
+      </tbody>
+    </table>
+    <div style="max-width: min(88vw, 780px); margin-top: clamp(0.4rem, 1.2vh, 0.8rem);">
+      <p class="reveal" style="font-size: var(--body-size); color: var(--text-secondary); margin-bottom: clamp(0.2rem, 0.6vh, 0.4rem);">核心机制：答案信息的完整性分散</p>
+      <ul class="bullet-list reveal">
+        <li><strong>R@1 骤降 −25.18pp vs R@5 仅降 −5.36pp</strong>：降幅严重不对称，说明答案信息并未丢失，而是被分散</li>
+        <li><strong>大 chunk (7500)的"虚高"</strong>：高R@1并非检索模型精确排序所致，而是 chunk 覆盖范围过大、评估分辨率不足——好比撒网范围太大，无论鱼在哪都被一并罩住，并非捕鱼技术好</li>
+        <li><strong>小 chunk (2500)的真实考验</strong>：完整答案被切分至2–3个 chunk ，单一向量匹配强度下降，但放宽至Top-5即可重新覆盖</li>
+      </ul>
+      <p class="reveal" style="font-size: var(--body-size); color: var(--text-secondary); margin-top: clamp(0.3rem, 1vh, 0.6rem); margin-bottom: clamp(0.2rem, 0.6vh, 0.4rem);">粒度权衡与评估定位</p>
+      <ul class="bullet-list reveal">
+        <li>大 chunk 利于答案完整匹配，但混入大量无关信息，生成环节引入噪声</li>
+        <li>小 chunk 利于精确定位与溯源，但拆散知识单元，对排序模型提出更高要求</li>
+        <li>本次评估选择 2500 词元：更真实衡量排序能力，贴近企业知识库实际场景</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 13 — KG CROSS-DOCUMENT
+     ============================================ -->
+<section class="slide content-slide" id="slide-13">
+  <div class="slide-content">
+    <p class="section-label reveal">06 实验结果</p>
+    <h2 class="reveal">知识图谱增强检索 —— 跨文档场景</h2>
+    <p class="reveal" style="font-size: var(--body-size); color: var(--text-secondary); margin-top: clamp(0.2rem, 0.5vh, 0.4rem);">12道跨文档综合问题 · 需同时参考两份文档</p>
+    <table class="data-table reveal" style="max-width: min(85vw, 550px); margin-top: clamp(0.5rem, 1.5vh, 1rem);">
+      <thead><tr><th>指标</th><th>纯向量</th><th>KG辅助</th><th>提升</th></tr></thead>
+      <tbody>
+        <tr><td>R@1</td><td>29.17%</td><td class="highlight">33.33%</td><td>+4.16pp</td></tr>
+        <tr><td>R@5</td><td>70.83%</td><td class="highlight">79.17%</td><td>+8.34pp</td></tr>
+        <tr><td>MRR</td><td>68.75%</td><td class="highlight">74.31%</td><td>+5.56pp</td></tr>
+      </tbody>
+    </table>
+    <div style="max-width: min(88vw, 780px); margin-top: clamp(0.5rem, 1.5vh, 1rem);">
+      <p class="reveal" style="font-size: var(--body-size); color: var(--text-secondary); margin-bottom: clamp(0.2rem, 0.6vh, 0.4rem);">关键发现</p>
+      <ul class="bullet-list reveal">
+        <li><strong>知识图谱辅助检索全面超越 baseline </strong>：三项指标均有提升，R@5 +8.34pp 最为显著</li>
+        <li><strong>跨文档实体链接</strong>：通过实体关系网络发现跨文档关联实体，自动扩展查询范围</li>
+        <li><strong>消融设计保证归因</strong>：两配置仅在检索路径上不同（排序方式一致），差异唯一归因于知识图谱贡献</li>
+        <li><strong>规模化潜力</strong>：随着文档规模和跨文档查询比例增加，知识图谱相对优势有望进一步扩大</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 14 — SUMMARY
+     ============================================ -->
+<section class="slide content-slide conclusion-slide" id="slide-14">
+  <div class="slide-content">
+    <p class="section-label reveal">07 总结</p>
+    <h2 class="reveal">主要工作</h2>
+    <ol class="num-list reveal" style="margin-top: clamp(0.5rem, 1.5vh, 1rem);">
+      <li><span class="idx">1</span> 完成多模态RAG问答系统的全栈工程实现 — Next.js 15 + PostgreSQL配合 pgvector 实现向量存储，文本/图像/音频三模态支持，串联外部模型 API 调用工作流</li>
+      <li><span class="idx">2</span> 引入 LightRAG 双层知识图谱扩展 + 构建可视化的实体、关系网络知识图谱</li>
+      <li><span class="idx">3</span> 定制化多模态知识库问答的语义检索链路，引入自适应检索路由匹配、多模态实体链接等机制</li>
+      <li><span class="idx">4</span> 构建轻量化的医疗文档问答集，并对原型系统 RAG 模块进行消融实验测试</li>
+      <li><span class="idx">5</span> 分析消融实验结果，分析各项评估指标的数值大小与变化趋势，从实践角度真正理解了 RAG 系统的性能与局限性</li>
+      <li><span class="idx">6</span> 实现 MCP 客户端框架，支持多服务器并行接入与 Function Calling 自主调用</li>
+      <li><span class="idx">7</span> 构建 Jest 双模式测试框架，覆盖全部模块功能领域</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 15 — FUTURE WORK
+     ============================================ -->
+<section class="slide content-slide" id="slide-15">
+  <div class="slide-content">
+    <p class="section-label reveal">07 展望</p>
+    <h2 class="reveal">未来改进方向</h2>
+    <div class="two-col reveal" style="margin-top: clamp(0.4rem, 1.2vh, 0.8rem);">
+      <div class="col">
+        <ul class="bullet-list">
+          <li><strong>全模态深化</strong> — 视频关键帧提取与描述生成，将视频内容纳入可检索范围；优化跨模态数据处理流程，确保不同模态间信息传递与融合的高效准确，构建真正的全模态 RAG </li>
+          <li><strong>知识图谱多跳推理</strong> — 引入图神经网络或路径排序算法实现多跳关系推理（如" A 产品→ B 公司→收购 C 公司"跨步关联）；探索时序知识图谱追踪实体关系动态演化</li>
+          <li><strong>领域适配</strong> — 通过垂直领域语料继续预训练或微调，提升嵌入模型对专业术语的语义捕捉精度；扩展更多领域更大规模问答集，全面衡量泛化能力</li>
+        </ul>
+      </div>
+      <div class="col">
+        <ul class="bullet-list">
+          <li><strong>性能扩展</strong> — 引入向量索引加速技术以亚线性复杂度替代暴力检索；向量数据库与关系型数据库分离部署按需独立扩缩容；高频知识库增加缓存层降低重复开销</li>
+          <li><strong> Agent 自主工作流</strong> — 引入智能体框架，使系统自动分解复杂需求为多步骤执行计划，自主完成文档检索、信息抽取、结构化汇总和报告生成全流程</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 16 — THANK YOU
+     ============================================ -->
+<section class="slide thanks-slide" id="slide-16">
+  <div class="slide-content">
+    <div class="top-rule reveal" style="width: clamp(60px, 10vw, 120px); height: 1px; background: var(--accent); margin-bottom: clamp(1.5rem, 4vh, 3rem);"></div>
+    <h1 class="thanks-title reveal">感谢聆听</h1>
+    <div class="divider reveal" style="display: flex; align-items: center; gap: clamp(0.5rem, 1.5vw, 1rem); margin-bottom: clamp(1rem, 3vh, 2rem);">
+      <span class="line" style="width: clamp(30px, 5vw, 60px); height: 1px; background: var(--accent);"></span>
+      <span class="dot" style="width: 4px; height: 4px; border-radius: 50%; background: var(--accent);"></span>
+      <span class="line" style="width: clamp(30px, 5vw, 60px); height: 1px; background: var(--accent);"></span>
+    </div>
+    <p class="thanks-subtitle reveal">敬请各位老师批评指正</p>
+  </div>
+</section>
+
+<!-- ============================================
+     JAVASCRIPT — SLIDE CONTROLLER
+     ============================================ -->
+<script>
+class SlidePresentation {
+  constructor() {
+    this.slides = document.querySelectorAll('.slide');
+    this.totalSlides = this.slides.length;
+    this.currentIndex = 0;
+    this.navDotsEl = document.getElementById('navDots');
+    this.progressBar = document.getElementById('progressBar');
+    this.init();
+  }
+
+  init() {
+    this.buildNavDots();
+    this.setupIntersectionObserver();
+    this.setupKeyboardNav();
+    this.updateProgress();
+    window.addEventListener('scroll', () => this.updateProgress(), { passive: true });
+  }
+
+  buildNavDots() {
+    this.navDotsEl.innerHTML = '';
+    this.slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'nav-dot';
+      dot.setAttribute('aria-label', `Slide ${i + 1}`);
+      dot.addEventListener('click', () => this.goTo(i));
+      this.navDotsEl.appendChild(dot);
+    });
+  }
+
+  setupIntersectionObserver() {
+    const options = { root: null, threshold: 0.4 };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          const idx = Array.from(this.slides).indexOf(entry.target);
+          if (idx >= 0) {
+            this.currentIndex = idx;
+            this.updateActiveDot();
+          }
+        }
+      });
+    }, options);
+    this.slides.forEach(s => observer.observe(s));
+  }
+
+  setupKeyboardNav() {
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        this.next();
+      } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        this.prev();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        this.goTo(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        this.goTo(this.totalSlides - 1);
+      }
+    });
+  }
+
+  goTo(i) {
+    if (i < 0 || i >= this.totalSlides) return;
+    this.slides[i].scrollIntoView({ behavior: 'smooth' });
+  }
+
+  next() { this.goTo(this.currentIndex + 1); }
+  prev() { this.goTo(this.currentIndex - 1); }
+
+  updateActiveDot() {
+    const dots = this.navDotsEl.querySelectorAll('.nav-dot');
+    dots.forEach((d, i) => d.classList.toggle('active', i === this.currentIndex));
+  }
+
+  updateProgress() {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    this.progressBar.style.width = `${Math.min(progress, 100)}%`;
+
+    // Update current slide based on scroll for touch/wheel users
+    let closest = 0;
+    let minDist = Infinity;
+    this.slides.forEach((s, i) => {
+      const rect = s.getBoundingClientRect();
+      const dist = Math.abs(rect.top);
+      if (dist < minDist) { minDist = dist; closest = i; }
+    });
+    if (closest !== this.currentIndex) {
+      this.currentIndex = closest;
+      this.updateActiveDot();
+    }
+  }
+}
+
+new SlidePresentation();
+</script>
+</body>
+</html>
