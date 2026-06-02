@@ -504,13 +504,13 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
   <div class="slide-content">
     <p class="section-num reveal">目录</p>
     <h2 class="reveal">汇报提纲</h2>
-    <ul class="toc-list" style="max-width: min(85vw, 650px);">
-      <li class="toc-item reveal"><span class="toc-num">01</span> 研究背景与动机<span class="toc-line"></span></li>
-      <li class="toc-item reveal"><span class="toc-num">02</span> RAG研究现状与技术选型<span class="toc-line"></span></li>
-      <li class="toc-item reveal"><span class="toc-num">03</span> 系统整体架构与功能模块<span class="toc-line"></span></li>
-      <li class="toc-item reveal"><span class="toc-num">04</span> 知识图谱混合检索机制<span class="toc-line"></span></li>
-      <li class="toc-item reveal"><span class="toc-num">05</span> 检索效率评估与实验结果<span class="toc-line"></span></li>
-      <li class="toc-item reveal"><span class="toc-num">06</span> 总结与展望<span class="toc-line"></span></li>
+    <ul class="toc-list" style="max-width: min(85vw, 750px); font-size: clamp(1.05rem, 2.2vw, 1.5rem);">
+      <li class="toc-item reveal" style="font-size: clamp(1.05rem, 2.2vw, 1.5rem);"><span class="toc-num" style="font-size: clamp(1rem, 1.8vw, 1.4rem);">01</span> 研究背景与动机<span class="toc-line"></span></li>
+      <li class="toc-item reveal" style="font-size: clamp(1.05rem, 2.2vw, 1.5rem);"><span class="toc-num" style="font-size: clamp(1rem, 1.8vw, 1.4rem);">02</span> RAG研究现状与技术选型<span class="toc-line"></span></li>
+      <li class="toc-item reveal" style="font-size: clamp(1.05rem, 2.2vw, 1.5rem);"><span class="toc-num" style="font-size: clamp(1rem, 1.8vw, 1.4rem);">03</span> 系统整体架构与功能模块<span class="toc-line"></span></li>
+      <li class="toc-item reveal" style="font-size: clamp(1.05rem, 2.2vw, 1.5rem);"><span class="toc-num" style="font-size: clamp(1rem, 1.8vw, 1.4rem);">04</span> 知识图谱混合检索机制<span class="toc-line"></span></li>
+      <li class="toc-item reveal" style="font-size: clamp(1.05rem, 2.2vw, 1.5rem);"><span class="toc-num" style="font-size: clamp(1rem, 1.8vw, 1.4rem);">05</span> 检索效率评估与实验结果<span class="toc-line"></span></li>
+      <li class="toc-item reveal" style="font-size: clamp(1.05rem, 2.2vw, 1.5rem);"><span class="toc-num" style="font-size: clamp(1rem, 1.8vw, 1.4rem);">06</span> 总结与展望<span class="toc-line"></span></li>
     </ul>
   </div>
 </section>
@@ -524,18 +524,18 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
     <h2 class="reveal">企业文档管理中的"知识孤岛"困境</h2>
     <div class="two-col reveal" style="margin-top: clamp(0.5rem, 1.5vh, 1rem);">
       <div class="col">
-        <h3>核心痛点</h3>
-        <ul class="bullet-list">
-          <li>文档分散存储，缺乏<strong>统一管理平台</strong></li>
-          <li>关键词检索无法理解<strong>语义关联</strong></li>
-          <li>大模型直接问答存在<strong>幻觉与上下文窗口限制</strong></li>
-          <li>多模态内容（图片/音频/视频）被<strong>排除在检索体系之外</strong></li>
+        <h3 style="font-size: clamp(1.2rem, 2.8vw, 1.9rem);">核心痛点</h3>
+        <ul class="bullet-list" style="font-size: clamp(1.05rem, 2.2vw, 1.5rem);">
+          <li style="font-size: clamp(1.05rem, 2.2vw, 1.5rem);">文档分散存储，缺乏<strong>统一管理平台</strong></li>
+          <li style="font-size: clamp(1.05rem, 2.2vw, 1.5rem);">关键词检索无法理解<strong>语义关联</strong></li>
+          <li style="font-size: clamp(1.05rem, 2.2vw, 1.5rem);">大模型直接问答存在<strong>幻觉与上下文窗口限制</strong></li>
+          <li style="font-size: clamp(1.05rem, 2.2vw, 1.5rem);">多模态内容（图片/音频/视频）被<strong>排除在检索体系之外</strong></li>
         </ul>
       </div>
       <div class="col">
-        <h3> RAG 技术的应对</h3>
+        <h3 style="font-size: clamp(1.2rem, 2.8vw, 1.9rem);"> RAG 技术的应对</h3>
         <div class="highlight-box">
-          <p>"检索增强生成将信息检索与大语言模型结合 — 先从外部知识库检索相关内容，再作为上下文提供给模型，从根本上降低幻觉出现的概率。"</p>
+          <p style="font-size: clamp(1.05rem, 2.2vw, 1.5rem);">"检索增强生成将信息检索与大语言模型结合 — 先从外部知识库检索相关内容，再作为上下文提供给模型，从根本上降低幻觉出现的概率。"</p>
         </div>
       </div>
     </div>
@@ -757,7 +757,7 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
         <div class="highlight-box" style="max-width: none; padding: clamp(0.5rem, 1.2vw, 0.8rem) clamp(0.6rem, 1.4vw, 1rem);">
           <p style="font-style: normal; font-weight: 600; color: var(--accent); font-size: var(--body-size);">01 KG（知识图谱）-Chunk 双向索引</p>
           <p style="font-style: normal; font-size: var(--body-size); color: var(--text-secondary); line-height: 1.4;">ChunkEntity 关联表桥接向量存储层与知识图谱层，填补"由实体找文档"的反向检索通路</p>
-          <p style="font-style: normal; font-size: var(--body-size); color: var(--text-secondary); line-height: 1.4;">ChunkEntity 不是取代 LightRAG 内部的映射，而是把它从图结构里提取出来，变成数据库层的公共基础设施</p>
+          <p style="font-style: normal; font-size: var(--body-size); color: var(--text-secondary); line-height: 1.4;">ChunkEntity 不是取代 LightRAG 内部的映射，而是把它从图结构里提取出来，<strong style="color: var(--text-primary);">变成数据库层的公共基础设施</strong></p>
         </div>
         <div class="highlight-box" style="max-width: none; padding: clamp(0.5rem, 1.2vw, 0.8rem) clamp(0.6rem, 1.4vw, 1rem);">
           <p style="font-style: normal; font-weight: 600; color: var(--accent); font-size: var(--body-size);">02 查询自适应路由</p>
@@ -1017,10 +1017,10 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
     <h2 class="reveal">未来改进方向</h2>
     <div class="two-col reveal" style="grid-template-columns: 1fr; max-width: min(90vw, 900px); margin-top: clamp(0.4rem, 1.2vh, 0.8rem);">
       <div class="col">
-        <ul class="bullet-list" style="max-width: none; font-size: clamp(0.95rem, 1.8vw, 1.4rem);">
-          <li style="font-size: clamp(0.95rem, 1.8vw, 1.4rem);"><strong>全模态深化</strong> — 视频关键帧提取与描述生成，将视频内容纳入可检索范围；优化跨模态数据处理流程，确保不同模态间信息传递与融合的高效准确，构建真正的全模态 RAG </li>
-          <li style="font-size: clamp(0.95rem, 1.8vw, 1.4rem);"><strong>知识图谱多跳推理</strong> — 引入图神经网络或路径排序算法实现多跳关系推理（如" A 产品→ B 公司→收购 C 公司"跨步关联）；探索时序知识图谱追踪实体关系动态演化</li>
-          <li style="font-size: clamp(0.95rem, 1.8vw, 1.4rem);"><strong>领域适配</strong> — 通过垂直领域语料继续预训练或微调，提升嵌入模型对专业术语的语义捕捉精度；扩展更多领域更大规模问答集，全面衡量泛化能力</li>
+        <ul class="bullet-list" style="max-width: none; font-size: clamp(1.05rem, 2.2vw, 1.5rem);">
+          <li style="font-size: clamp(1.05rem, 2.2vw, 1.5rem);"><strong>全模态深化</strong> — 视频关键帧提取与描述生成，将视频内容纳入可检索范围；优化跨模态数据处理流程，确保不同模态间信息传递与融合的高效准确，构建真正的全模态 RAG </li>
+          <li style="font-size: clamp(1.05rem, 2.2vw, 1.5rem);"><strong>知识图谱多跳推理</strong> — 引入图神经网络或路径排序算法实现多跳关系推理（如" A 产品→ B 公司→收购 C 公司"跨步关联）；探索时序知识图谱追踪实体关系动态演化</li>
+          <li style="font-size: clamp(1.05rem, 2.2vw, 1.5rem);"><strong>领域适配</strong> — 通过垂直领域语料继续预训练或微调，提升嵌入模型对专业术语的语义捕捉精度；扩展更多领域更大规模问答集，全面衡量泛化能力</li>
         </ul>
       </div>
     </div>
