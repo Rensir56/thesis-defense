@@ -676,7 +676,7 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
       <div class="module-row">
         <div class="module-cell">
           <p class="m-num">01</p>
-          <p class="m-title">登录认证</p>
+          <p class="m-title">登录认证 / 个人主页</p>
           <p class="m-desc">bcrypt 哈希 + 加密会话 + 中间件</p>
         </div>
         <div class="module-cell">
@@ -714,29 +714,62 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
   <div class="slide-content">
     <p class="section-label reveal">04 核心创新</p>
     <h2 class="reveal">系统核心创新点</h2>
-    <div class="module-grid reveal" style="margin-top: clamp(0.4rem, 1vh, 0.8rem); max-width: min(88vw, 820px);">
-      <div class="module-row">
-        <div class="module-cell">
-          <p class="m-num">01</p>
-          <p class="m-title">多模态实体链接</p>
-          <p class="m-desc">视觉理解→实体向量→ ChunkEntity 关联表→反向索引文档，打通视觉·知识图谱·RAG 三模块</p>
+    <div class="two-col reveal" style="grid-template-columns: 1fr 1.35fr; max-width: min(96vw, 1050px); margin-top: clamp(0.3rem, 1vh, 0.6rem); gap: clamp(0.8rem, 2vw, 1.5rem);">
+      <div class="col" style="gap: clamp(0.3rem, 0.8vh, 0.5rem);">
+        <div class="highlight-box" style="max-width: none; padding: clamp(0.5rem, 1.2vw, 0.8rem) clamp(0.6rem, 1.4vw, 1rem);">
+          <p style="font-style: normal; font-weight: 600; color: var(--accent); font-size: var(--body-size);">01 KG-Chunk 双向索引</p>
+          <p style="font-style: normal; font-size: var(--body-size); color: var(--text-secondary); line-height: 1.4;">ChunkEntity 关联表桥接向量存储层与知识图谱层，填补"由实体找文档"的反向检索通路</p>
         </div>
-        <div class="module-cell">
-          <p class="m-num">02</p>
-          <p class="m-title">MCP 工具自主调用</p>
-          <p class="m-desc">Streamable HTTP + JSON-RPC 2.0，多服务器并行，Function Calling 注入 LLM 自主决策</p>
+        <div class="highlight-box" style="max-width: none; padding: clamp(0.5rem, 1.2vw, 0.8rem) clamp(0.6rem, 1.4vw, 1rem);">
+          <p style="font-style: normal; font-weight: 600; color: var(--accent); font-size: var(--body-size);">02 MCP 工具自主调用</p>
+          <p style="font-style: normal; font-size: var(--body-size); color: var(--text-secondary); line-height: 1.4;">Streamable HTTP + JSON-RPC 2.0，多服务器并行，Function Calling 注入LLM自主决策</p>
+        </div>
+        <div class="highlight-box" style="max-width: none; padding: clamp(0.5rem, 1.2vw, 0.8rem) clamp(0.6rem, 1.4vw, 1rem);">
+          <p style="font-style: normal; font-weight: 600; color: var(--accent); font-size: var(--body-size);">03 查询自适应路由</p>
+          <p style="font-style: normal; font-size: var(--body-size); color: var(--text-secondary); line-height: 1.4;">LLM检索前判断复杂度→简单查询纯向量≈200ms，复杂查询完知识图谱路径≈2-5s</p>
+        </div>
+        <div class="highlight-box" style="max-width: none; padding: clamp(0.5rem, 1.2vw, 0.8rem) clamp(0.6rem, 1.4vw, 1rem);">
+          <p style="font-style: normal; font-weight: 600; color: var(--accent); font-size: var(--body-size);">04 连通分量图可视化</p>
+          <p style="font-style: normal; font-size: var(--body-size); color: var(--text-secondary); line-height: 1.4;">知识图谱检索结果按连通分量划分→交互式力导向图，直观展示实体关联拓扑</p>
         </div>
       </div>
-      <div class="module-row bottom">
-        <div class="module-cell">
-          <p class="m-num">03</p>
-          <p class="m-title">查询自适应路由</p>
-          <p class="m-desc">大语言模型检索前判断复杂度 → 简单查询纯向量≈200ms，复杂查询完整知识图谱路径≈2-5s</p>
+      <div class="col">
+        <h3 style="margin-bottom: clamp(0.3rem, 0.8vh, 0.5rem);">ChunkEntity 双向索引 — 知识图谱检索的通用优化</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(0.5rem, 1.2vh, 0.8rem); margin-bottom: clamp(0.5rem, 1.2vh, 0.8rem);">
+          <div>
+            <p style="font-size: var(--body-size); color: var(--text-secondary); line-height: 1.5; margin-bottom: clamp(0.15rem, 0.4vh, 0.25rem);"><strong style="color: var(--accent);">问题</strong></p>
+            <p style="font-size: var(--body-size); color: var(--text-secondary); line-height: 1.5;">知识图谱实体与文档切片之间缺乏双向索引——实体搜索找到了实体，却无法定位"哪些 chunk 包含这个实体"；纯文本尚可依赖语义兜底，图片走视觉理解得到的信息则几乎检索不到</p>
+          </div>
+          <div>
+            <p style="font-size: var(--body-size); color: var(--text-secondary); line-height: 1.5; margin-bottom: clamp(0.15rem, 0.4vh, 0.25rem);"><strong style="color: var(--accent);">流程</strong></p>
+            <p style="font-size: var(--body-size); color: var(--text-secondary); line-height: 1.5;">上传遍历每个 chunk → 字符串匹配实体名称 → 批量插入 (chunkId, entityId) → skipDuplicates 去重，纯文本和图片文本走同一逻辑</p>
+          </div>
+          <div>
+            <p style="font-size: var(--body-size); color: var(--text-secondary); line-height: 1.5; margin-bottom: clamp(0.15rem, 0.4vh, 0.25rem);"><strong style="color: var(--accent);">方案</strong></p>
+            <p style="font-size: var(--body-size); color: var(--text-secondary); line-height: 1.5;">新增 ChunkEntity [chunkId, entityId] 多对多关联表，充当向量存储层与知识图谱层之间的通用索引桥梁</p>
+          </div>
+          <div>
+            <p style="font-size: var(--body-size); color: var(--text-secondary); line-height: 1.5; margin-bottom: clamp(0.15rem, 0.4vh, 0.25rem);"><strong style="color: var(--accent);">效果</strong></p>
+            <p style="font-size: var(--body-size); color: var(--text-secondary); line-height: 1.5;">知识图谱匹配实体 → 即时查出关联 chunk → 填补"由实体找文档"的反向通路，纯文本和多模态文档统一受益</p>
+          </div>
         </div>
-        <div class="module-cell">
-          <p class="m-num">04</p>
-          <p class="m-title">连通分量图可视化</p>
-          <p class="m-desc">知识图谱检索结果按连通分量划分 → 交互式力导向图，直观展示实体关联拓扑</p>
+        <p class="reveal" style="font-size: var(--body-size); color: var(--text-secondary); margin-bottom: clamp(0.3rem, 0.8vh, 0.5rem);"><strong style="color: var(--accent);">闭环链路</strong></p>
+        <div class="flow-cards reveal" style="gap: clamp(0.3rem, 0.6vw, 0.5rem); max-width: none;">
+          <div class="flow-card" style="padding: clamp(0.4rem, 0.8vw, 0.6rem) clamp(0.4rem, 0.7vw, 0.6rem); background: var(--accent-light); border: none;">
+            <p style="font-size: var(--body-size); text-align: center; color: var(--text-primary); line-height: 1.35;">图片<br>视觉理解</p>
+          </div>
+          <span style="color: var(--accent); font-size: var(--body-size); font-weight: 600;">→</span>
+          <div class="flow-card" style="padding: clamp(0.4rem, 0.8vw, 0.6rem) clamp(0.4rem, 0.7vw, 0.6rem); background: var(--accent-light); border: none;">
+            <p style="font-size: var(--body-size); text-align: center; color: var(--text-primary); line-height: 1.35;">实体抽取<br>写入 Entity 表</p>
+          </div>
+          <span style="color: var(--accent); font-size: var(--body-size); font-weight: 600;">→</span>
+          <div class="flow-card" style="padding: clamp(0.4rem, 0.8vw, 0.6rem) clamp(0.4rem, 0.7vw, 0.6rem); background: var(--accent-light); border: none;">
+            <p style="font-size: var(--body-size); text-align: center; color: var(--text-primary); line-height: 1.35;">ChunkEntity<br>关联表</p>
+          </div>
+          <span style="color: var(--accent); font-size: var(--body-size); font-weight: 600;">→</span>
+          <div class="flow-card" style="padding: clamp(0.4rem, 0.8vw, 0.6rem) clamp(0.4rem, 0.7vw, 0.6rem); background: var(--accent-light); border: none;">
+            <p style="font-size: var(--body-size); text-align: center; color: var(--text-primary); line-height: 1.35;">反向索引<br>定位 chunk</p>
+          </div>
         </div>
       </div>
     </div>
@@ -881,7 +914,7 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
     <h2 class="reveal">知识图谱增强检索 —— 跨文档场景</h2>
     <p class="reveal" style="font-size: var(--body-size); color: var(--text-secondary); margin-top: clamp(0.2rem, 0.5vh, 0.4rem);">12道跨文档综合问题 · 需同时参考两份文档</p>
     <table class="data-table reveal" style="max-width: min(85vw, 550px); margin-top: clamp(0.5rem, 1.5vh, 1rem);">
-      <thead><tr><th>指标</th><th>纯向量</th><th>KG辅助</th><th>提升</th></tr></thead>
+      <thead><tr><th>指标</th><th>纯向量</th><th>知识图谱辅助</th><th>提升</th></tr></thead>
       <tbody>
         <tr><td>R@1</td><td>29.17%</td><td class="highlight">33.33%</td><td>+4.16pp</td></tr>
         <tr><td>R@5</td><td>70.83%</td><td class="highlight">79.17%</td><td>+8.34pp</td></tr>
