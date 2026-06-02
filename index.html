@@ -509,9 +509,8 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
       <li class="toc-item reveal"><span class="toc-num">02</span> RAG研究现状与技术选型<span class="toc-line"></span></li>
       <li class="toc-item reveal"><span class="toc-num">03</span> 系统整体架构与功能模块<span class="toc-line"></span></li>
       <li class="toc-item reveal"><span class="toc-num">04</span> 知识图谱混合检索机制<span class="toc-line"></span></li>
-      <li class="toc-item reveal"><span class="toc-num">05</span> 多模态能力与 MCP 工具集成<span class="toc-line"></span></li>
-      <li class="toc-item reveal"><span class="toc-num">06</span> 检索效率评估与实验结果<span class="toc-line"></span></li>
-      <li class="toc-item reveal"><span class="toc-num">07</span> 总结与展望<span class="toc-line"></span></li>
+      <li class="toc-item reveal"><span class="toc-num">05</span> 检索效率评估与实验结果<span class="toc-line"></span></li>
+      <li class="toc-item reveal"><span class="toc-num">06</span> 总结与展望<span class="toc-line"></span></li>
     </ul>
   </div>
 </section>
@@ -744,39 +743,11 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
   </div>
 </section>
 
-<!-- ============================================
-     SLIDE 8 — MULTIMODAL & MCP
-     ============================================ -->
-<section class="slide content-slide" id="slide-9">
-  <div class="slide-content">
-    <p class="section-label reveal">05 多模态与工具集成</p>
-    <h2 class="reveal">多模态能力与 MCP 外部工具调用</h2>
-    <div class="two-col reveal" style="margin-top: clamp(0.5rem, 1.5vh, 1rem);">
-      <div class="col">
-        <h3>多模态三链路</h3>
-        <ul class="bullet-list">
-          <li><strong>视觉理解</strong> — 聊天图片附件 + 上传文档图片，Base64 → qwen3-vl-flash</li>
-          <li><strong> TTS 语音合成</strong> — 回复文本流式完成后合成语音，自动附加音频播放</li>
-          <li><strong> ASR 语音识别</strong> — 前端音频 Base64 提交，逐 token 流式返回文字</li>
-        </ul>
-      </div>
-      <div class="col">
-        <h3>MCP 工具集成</h3>
-        <ul class="bullet-list">
-          <li>Streamable HTTP 传输模式 + JSON-RPC 2.0</li>
-          <li>工具名称前缀机制：<strong>server__tool</strong></li>
-          <li>Function Calling 格式注入 LLM 上下文 → 模型自主判断调用</li>
-          <li>连接测试 · 工具浏览器 · 调用历史</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- ============================================
      SLIDE 9 — EVALUATION SETUP
      ============================================ -->
-<section class="slide content-slide" id="slide-10">
+<section class="slide content-slide" id="slide-9">
   <div class="slide-content">
     <p class="section-label reveal">06 评估实验</p>
     <h2 class="reveal">数据集构建与评估指标</h2>
@@ -820,9 +791,9 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 </section>
 
 <!-- ============================================
-     SLIDE 11 — BASELINE RESULTS
+     SLIDE 10 — BASELINE RESULTS
      ============================================ -->
-<section class="slide content-slide" id="slide-11">
+<section class="slide content-slide" id="slide-10">
   <div class="slide-content">
     <p class="section-label reveal">06 实验结果</p>
     <h2 class="reveal">纯向量检索基线表现</h2>
@@ -868,9 +839,9 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 </section>
 
 <!-- ============================================
-     SLIDE 12 — CHUNK SIZE ABLATION
+     SLIDE 11 — CHUNK SIZE ABLATION
      ============================================ -->
-<section class="slide content-slide" id="slide-12">
+<section class="slide content-slide" id="slide-11">
   <div class="slide-content">
     <p class="section-label reveal">06 实验结果</p>
     <h2 class="reveal">Chunk粒度消融 — 7500 vs 2500 词元</h2>
@@ -902,9 +873,9 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 </section>
 
 <!-- ============================================
-     SLIDE 13 — KG CROSS-DOCUMENT
+     SLIDE 12 — KG CROSS-DOCUMENT
      ============================================ -->
-<section class="slide content-slide" id="slide-13">
+<section class="slide content-slide" id="slide-12">
   <div class="slide-content">
     <p class="section-label reveal">06 实验结果</p>
     <h2 class="reveal">知识图谱增强检索 —— 跨文档场景</h2>
@@ -930,9 +901,9 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 </section>
 
 <!-- ============================================
-     SLIDE 14 — SUMMARY
+     SLIDE 13 — SUMMARY
      ============================================ -->
-<section class="slide content-slide conclusion-slide" id="slide-14">
+<section class="slide content-slide conclusion-slide" id="slide-13">
   <div class="slide-content">
     <p class="section-label reveal">07 总结</p>
     <h2 class="reveal">主要工作</h2>
@@ -949,9 +920,9 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 </section>
 
 <!-- ============================================
-     SLIDE 15 — FUTURE WORK
+     SLIDE 14 — FUTURE WORK
      ============================================ -->
-<section class="slide content-slide" id="slide-15">
+<section class="slide content-slide" id="slide-14">
   <div class="slide-content">
     <p class="section-label reveal">07 展望</p>
     <h2 class="reveal">未来改进方向</h2>
@@ -974,9 +945,9 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 </section>
 
 <!-- ============================================
-     SLIDE 16 — THANK YOU
+     SLIDE 15 — THANK YOU
      ============================================ -->
-<section class="slide thanks-slide" id="slide-16">
+<section class="slide thanks-slide" id="slide-15">
   <div class="slide-content">
     <div class="top-rule reveal" style="width: clamp(60px, 10vw, 120px); height: 1px; background: var(--accent); margin-bottom: clamp(1.5rem, 4vh, 3rem);"></div>
     <h1 class="thanks-title reveal">敬请各位老师批评指正</h1>
