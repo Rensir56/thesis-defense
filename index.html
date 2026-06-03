@@ -588,32 +588,40 @@ html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
      SLIDE 5 — KG-ENHANCED RAG
      ============================================ -->
 <section class="slide content-slide" id="slide-5">
-  <div class="slide-content">
+  <div class="slide-content" style="padding-right: clamp(1rem, 3vw, 2.5rem);">
     <p class="section-label reveal">02 技术路线</p>
     <h2 class="reveal">知识图谱增强RAG — GraphRAG vs LightRAG </h2>
-    <div class="two-col reveal" style="margin: clamp(0.5rem, 1.5vh, 1rem) auto 0;">
+    <div class="two-col reveal" style="margin-top: clamp(0.3rem, 0.8vh, 0.5rem); gap: clamp(0.5rem, 1.5vw, 1rem); max-width: none;">
       <div class="col">
-        <h3>GraphRAG</h3>
-        <ul class="bullet-list">
-          <li><strong>5步索引</strong>：切块 → 实体/关系抽取 → 摘要合成 → Leiden 社区检测 → 社区报告生成</li>
-          <li><strong>Global Search</strong>：Map-Reduce遍历社区摘要，预计算层次化全局知识视图</li>
-          <li><strong>优势</strong>：深度全局洞察力强，实体消歧策略完备，多跳推理精度高，可解释性强</li>
-          <li><strong>代价</strong>： Token 消耗数十倍于传统 RAG ，增量更新牵一发而动全身， Global Search 延迟可达分钟级</li>
-        </ul>
+        <div class="two-col" style="margin: 0; max-width: none;">
+          <div class="col">
+            <h3>GraphRAG</h3>
+            <ul class="bullet-list">
+              <li><strong>5步索引</strong>：切块 → 实体/关系抽取 → 摘要合成 → Leiden 社区检测 → 社区报告生成</li>
+              <li><strong>Global Search</strong>：Map-Reduce遍历社区摘要，预计算层次化全局知识视图</li>
+              <li><strong>优势</strong>：深度全局洞察力强，实体消歧策略完备，多跳推理精度高，可解释性强</li>
+              <li><strong>代价</strong>： Token 消耗数十倍于传统 RAG ，增量更新牵一发而动全身， Global Search 延迟可达分钟级</li>
+            </ul>
+          </div>
+          <div class="col">
+            <h3>LightRAG</h3>
+            <ul class="bullet-list">
+              <li><strong>3步索引</strong>：切块 → 实体/关系(+关键词)抽取 → 键值对去重</li>
+              <li><strong>低层检索</strong>：用具体实体名匹配节点 → 一跳邻居扩展 → 收集关联关系与文本块</li>
+              <li><strong>高层检索</strong>：用抽象主题关键词匹配关系边 → 聚合涉及的实体与语义上下文</li>
+              <li><strong>优势</strong>： Token 减少99%，增量仅追加节点/边，秒级响应</li>
+              <li><strong>代价</strong>：全局深度洞察弱于 GraphRAG ，实体消歧仅基于名称匹配，不处理时效冲突</li>
+            </ul>
+          </div>
+        </div>
+        <div class="highlight-box reveal" style="margin-top: clamp(0.4rem, 1vh, 0.6rem); max-width: none;">
+          <p><strong>本文选型依据：</strong>系统面向企业知识库，文档更新频率高、数据规模中等，要求实时交互。LightRAG 的"按需检索 + 增量友好"设计更适合轻量化场景 — 无需社区重建，新文档直接追加，查询响应在秒级。避免 GraphRAG 的"Token 焚烧炉"索引成本和分钟级 Global Search 延迟。</p>
+        </div>
       </div>
-      <div class="col">
-        <h3>LightRAG</h3>
-        <ul class="bullet-list">
-          <li><strong>3步索引</strong>：切块 → 实体/关系(+关键词)抽取 → 键值对去重</li>
-          <li><strong>低层检索</strong>：用具体实体名匹配节点 → 一跳邻居扩展 → 收集关联关系与文本块</li>
-          <li><strong>高层检索</strong>：用抽象主题关键词匹配关系边 → 聚合涉及的实体与语义上下文</li>
-          <li><strong>优势</strong>： Token 减少99%，增量仅追加节点/边，秒级响应</li>
-          <li><strong>代价</strong>：全局深度洞察弱于 GraphRAG ，实体消歧仅基于名称匹配，不处理时效冲突</li>
-        </ul>
+      <div class="col" style="justify-content: center; align-items: center;">
+        <img src="images/KB-page-KG.png" alt="知识图谱可视化" style="width: 100%; max-height: min(80vh, 630px); object-fit: contain; border: 1px solid var(--thin-line); border-radius: 4px;">
+        <p style="font-size: var(--small-size); color: var(--text-muted); text-align: center; margin-top: clamp(0.2rem, 0.5vh, 0.4rem);">LightRAG 知识图谱 — 实体与关系网络</p>
       </div>
-    </div>
-    <div class="highlight-box reveal" style="margin: clamp(0.6rem, 1.5vh, 1.2rem) auto 0; max-width: min(90vw, 820px);">
-      <p><strong>本文选型依据：</strong>系统面向企业知识库，文档更新频率高、数据规模中等，要求实时交互。LightRAG 的"按需检索 + 增量友好"设计更适合轻量化场景 — 无需社区重建，新文档直接追加，查询响应在秒级。避免 GraphRAG 的"Token 焚烧炉"索引成本和分钟级 Global Search 延迟。</p>
     </div>
   </div>
 </section>
